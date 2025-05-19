@@ -18,10 +18,39 @@ Puedes añadir adicionalmente la conversación completa como link o archivo adju
 
 **Prompt 1:**
 
+Eres un experto PO en sofware de monitorización de dispositivos. Detalla la descripción de un sofware de monitorización de dispositivos y componentes embarcados en un autobus teniendo en cuenta las siguientes características:
+- Un autobús tiene un pupitre que es controlado por el conductor del autobús.
+- El pupitre tiene los componentes físicos: Lector QR, lector de tarjeta RFID, lector de tarjeta EMT, modem, impresora.
+- Un autobús puede tener de 0 hasta 5 validadoras que están conectadas al pupitre.
+- Las validadoras tienen un lector rfid y un lector de tarjeta EMV
+- No se sabe el número de autobuses totales. 
+
+El formato de exportación tiene que ser Markdown. 
+
+
 **Prompt 2:**
+
+Ten en cuenta que todos los dispositivos tienen un identificador único, incluido el autobús, las validadoras y el pupitre
 
 **Prompt 3:**
 
+- El autobús el identificador tiene el formato 1234
+- El pupitre tiene el identificador PUP12345
+- Las validadoras tienen el formato VAL12345
+- Los componentes el formato puede variar porque depende del fabricante.
+
+
+
+**Prompt 4:**
+
+- El autobús puede tener 5 cámaras como máximo o ninguna.
+- Los estados de los dispositivos son OK o KO
+- El autobús puede tener el estado de OK, warning o KO.
+- Las validadoras y pupitres pueden tener el estado de OK, warning o KO
+
+
+**Prompt 5:**
+Me podrías mostrar una descripción breve del proyecto en formato markdown. 
 ---
 
 ## 2. Arquitectura del Sistema

@@ -15,15 +15,56 @@
 
 ### **0.1. Tu nombre completo:**
 
+Lucio David Fondón Terrón
+
 ### **0.2. Nombre del proyecto:**
+
+Monitorización de los dispositivos y componentes embarcados en un autobús
 
 ### **0.3. Descripción breve del proyecto:**
 
+# Sistema de Monitorización de Dispositivos para Autobuses
+
+
+El sistema es una solución integral para la monitorización y gestión de dispositivos embarcados en autobuses. Permite el seguimiento en tiempo real del estado de todos los componentes del vehículo, incluyendo:
+Pupitre del conductor con sus dispositivos:
+- Lector QR
+- Lector RFID
+- Lector EMV
+- Módem
+- Impresora
+
+Validadoras (hasta 5 por autobús) con sus lectores:
+- RFID
+- EMV
+
+Cámaras (hasta 5 por autobús)
+
+Cada dispositivo tiene un identificador único y puede estar en diferentes estados:
+- Autobús, Pupitre y Validadoras: OK, Warning o KO
+- Componentes individuales: OK o KO
+
+El sistema proporciona:
+- Monitorización en tiempo real
+- Gestión de eventos y alertas
+- Mantenimiento predictivo
+- Seguridad y control de acceso
+- Interfaz de usuario intuitiva
+- APIs para integración con otros sistemas
+
+La solución está diseñada para ser escalable, segura y fácil de mantener, permitiendo una gestión eficiente de toda la flota de autobuses.
+
+
 ### **0.4. URL del proyecto:**
+
+https://github.com/luciofondon/neobus.git
+
 
 > Puede ser pública o privada, en cuyo caso deberás compartir los accesos de manera segura. Puedes enviarlos a [alvaro@lidr.co](mailto:alvaro@lidr.co) usando algún servicio como [onetimesecret](https://onetimesecret.com/).
 
 ### 0.5. URL o archivo comprimido del repositorio
+
+https://github.com/luciofondon/neobus.git
 
 > Puedes tenerlo alojado en público o en privado, en cuyo caso deberás compartir los accesos de manera segura. Puedes enviarlos a [alvaro@lidr.co](mailto:alvaro@lidr.co) usando algún servicio como [onetimesecret](https://onetimesecret.com/). También puedes compartir por correo un archivo zip con el contenido
 
@@ -36,11 +77,16 @@
 
 ### **1.1. Objetivo:**
 
-> Propósito del producto. Qué valor aporta, qué soluciona, y para quién.
+
+Este proyecto va destinado a las personas de mantemiento para poder monitorizar de una forma sencilla los diferentes problemas físicos que hay en la flota de autobuses. 
 
 ### **1.2. Características y funcionalidades principales:**
 
-> Enumera y describe las características y funcionalidades específicas que tiene el producto para satisfacer las necesidades identificadas.
+
+- Ver a simple vista qué autobuses tienen algún problema.
+- Identificar los componentes físicos que dan problemas. 
+- Poder implantar un plan de acción para restablecer o solucionar el problema. 
+- Monitorización en tiempo real.
 
 ### **1.3. Diseño y experiencia de usuario:**
 
