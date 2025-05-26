@@ -56,3 +56,17 @@ Ahora vamos a proceder a la configuracion del websocket
 
 
 Me podrías eliminar la configuracion de websocket del proyecto para centrarme solo en la API  rest
+
+
+Todas las peticiones me devuelve {"message":"Cannot GET /devices/cameras","error":"Not Found","statusCode":404}%                                           
+
+
+La ruta de las api tiene el formato http://localhost:3000/api/v1/validators
+
+Funciona pero no hay ningún dato en la Bases de datos
+
+
+Me puedes mostrar todos los endpoiint configurados 
+
+
+Ahora vamos a empezar con el frontend donde agregaremos toda la configuracion en la carpeta frontend de la raiz del proyecto 
