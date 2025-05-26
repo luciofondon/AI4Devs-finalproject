@@ -1,12 +1,12 @@
-import { Container, Grid, Typography, Box } from '@mui/material';
+import { Container, Grid, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { devicesService } from '../services/devices';
-import { ValidatorStatus } from '../components/ValidatorStatus/ValidatorStatus';
-import { LoadingOverlay } from '../components/LoadingOverlay/LoadingOverlay';
-import { ErrorMessage } from '../components/ErrorMessage/ErrorMessage';
-import { EmptyState } from '../components/EmptyState/EmptyState';
+import { devicesService } from '../../services/devices';
+import { ValidatorStatus } from '../../components/ValidatorStatus/ValidatorStatus';
+import { LoadingOverlay } from '../../components/LoadingOverlay/LoadingOverlay';
+import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
+import { EmptyState } from '../../components/EmptyState/EmptyState';
 
-export const ValidatorsPage = () => {
+const ValidatorsPage = () => {
   const { data: validators, isLoading, error } = useQuery({
     queryKey: ['validators'],
     queryFn: devicesService.getValidators,
@@ -41,20 +41,13 @@ export const ValidatorsPage = () => {
       </Typography>
       <Grid container spacing={3}>
         {validators.map((validator) => (
-          <Box
-            key={validator.id}
-            sx={{
-              width: {
-                xs: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.33% - 16px)',
-              },
-            }}
-          >
+          <Grid item xs={12} sm={6} md={4} key={validator.id}>
             <ValidatorStatus validator={validator} />
-          </Box>
+          </Grid>
         ))}
       </Grid>
     </Container>
   );
-}; 
+};
+
+export default ValidatorsPage; 

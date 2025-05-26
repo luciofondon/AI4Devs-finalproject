@@ -1,4 +1,5 @@
 import { Card, CardContent, Typography, Chip, Button, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import type { Pupitre, PupitreStatus as PupitreStatusType } from '../../types';
 import { usePupitreStatus } from '../../hooks/usePupitreStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
@@ -23,21 +24,32 @@ const getStatusColor = (status: Pupitre['status']) => {
 };
 
 export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
+  const navigate = useNavigate();
   const { updateStatus, isUpdating, error, isSuccess } = usePupitreStatus();
 
   const handleStatusChange = (newStatus: PupitreStatusType) => {
     updateStatus({ pupitreId: pupitre.id, status: newStatus });
   };
 
+  const handleClick = () => {
+    navigate(`/pupitres/${pupitre.id}`);
+  };
+
   return (
-    <Card sx={{ position: 'relative' }}>
+    <Card 
+      sx={{ 
+        position: 'relative',
+        cursor: 'pointer',
+        '&:hover': {
+          boxShadow: 6,
+        },
+      }}
+      onClick={handleClick}
+    >
       <LoadingOverlay open={isUpdating} />
       <CardContent>
         <Typography variant="h6" component="div">
           Pupitre {pupitre.id}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Bus: {pupitre.busId}
         </Typography>
         <Chip
           label={pupitre.status}
@@ -46,6 +58,9 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
           sx={{ mt: 1 }}
         />
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Bus ID: {pupitre.busId}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Última actualización: {new Date(pupitre.updatedAt).toLocaleString()}
         </Typography>
         <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
@@ -53,7 +68,10 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
             size="small"
             variant="outlined"
             color="success"
-            onClick={() => handleStatusChange('OK' as PupitreStatusType)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStatusChange('OK' as PupitreStatusType);
+            }}
             disabled={isUpdating || pupitre.status === 'OK'}
           >
             OK
@@ -62,7 +80,10 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
             size="small"
             variant="outlined"
             color="warning"
-            onClick={() => handleStatusChange('WARNING' as PupitreStatusType)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStatusChange('WARNING' as PupitreStatusType);
+            }}
             disabled={isUpdating || pupitre.status === 'WARNING'}
           >
             WARNING
@@ -71,7 +92,10 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
             size="small"
             variant="outlined"
             color="error"
-            onClick={() => handleStatusChange('KO' as PupitreStatusType)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleStatusChange('KO' as PupitreStatusType);
+            }}
             disabled={isUpdating || pupitre.status === 'KO'}
           >
             KO
