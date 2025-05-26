@@ -1,11 +1,25 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Typography, Box, Button, Paper } from '@mui/material';
+import { Container, Typography, Box, Button, Paper, Chip, Stack } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { devicesService } from '../../services/devices';
 import { LoadingOverlay } from '../../components/LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { ValidatorStatus } from '../../components/ValidatorStatus/ValidatorStatus';
+import type { ReaderStatus } from '../../types';
+
+const getReaderStatusColor = (status: ReaderStatus) => {
+  switch (status) {
+    case 'OK':
+      return 'success';
+    case 'WARNING':
+      return 'warning';
+    case 'KO':
+      return 'error';
+    default:
+      return 'default';
+  }
+};
 
 export const ValidatorDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -72,7 +86,22 @@ export const ValidatorDetailPage = () => {
               <Typography variant="body1">
                 <strong>Estado:</strong> {validator.status}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                <strong>Estado de los Lectores:</strong>
+              </Typography>
+              <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                <Chip
+                  label={`RFID: ${validator.rfidStatus}`}
+                  color={getReaderStatusColor(validator.rfidStatus)}
+                  size="small"
+                />
+                <Chip
+                  label={`EMV: ${validator.emvStatus}`}
+                  color={getReaderStatusColor(validator.emvStatus)}
+                  size="small"
+                />
+              </Stack>
+              <Typography variant="body1" sx={{ mt: 2 }}>
                 <strong>Bus asociado:</strong>{' '}
                 {bus ? `Bus ${bus.id}` : 'No hay bus asociado'}
               </Typography>

@@ -32,6 +32,34 @@ export enum QualityStatus {
   POOR = 'POOR',
 }
 
+export enum ReaderStatus {
+  OK = 'OK',
+  WARNING = 'WARNING',
+  KO = 'KO',
+}
+
+export enum PrinterStatus {
+  OK = 'OK',
+  WARNING = 'WARNING',
+  KO = 'KO',
+  NO_PAPER = 'NO_PAPER',
+  NO_RIBBON = 'NO_RIBBON',
+}
+
+export enum ModemStatus {
+  OK = 'OK',
+  WARNING = 'WARNING',
+  KO = 'KO',
+  NO_SIGNAL = 'NO_SIGNAL',
+}
+
+export enum GPSStatus {
+  OK = 'OK',
+  WARNING = 'WARNING',
+  KO = 'KO',
+  NO_SIGNAL = 'NO_SIGNAL',
+}
+
 export interface Bus {
   id: string;
   status: BusStatus;
@@ -43,6 +71,12 @@ export interface Pupitre {
   id: string;
   status: PupitreStatus;
   busId: string;
+  qrStatus: ReaderStatus;
+  rfidStatus: ReaderStatus;
+  emvStatus: ReaderStatus;
+  printerStatus: PrinterStatus;
+  modemStatus: ModemStatus;
+  gpsStatus: GPSStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -51,6 +85,8 @@ export interface Validator {
   id: string;
   status: ValidatorStatus;
   busId: string;
+  rfidStatus: ReaderStatus;
+  emvStatus: ReaderStatus;
   createdAt: string;
   updatedAt: string;
 }

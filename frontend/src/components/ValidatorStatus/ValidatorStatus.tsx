@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography, Chip, Button, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import type { Validator, ValidatorStatus as ValidatorStatusType } from '../../types';
+import type { Validator, ValidatorStatus as ValidatorStatusType, ReaderStatus } from '../../types';
 import { useValidatorStatus } from '../../hooks/useValidatorStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -11,6 +11,19 @@ interface ValidatorStatusProps {
 }
 
 const getStatusColor = (status: Validator['status']) => {
+  switch (status) {
+    case 'OK':
+      return 'success';
+    case 'WARNING':
+      return 'warning';
+    case 'KO':
+      return 'error';
+    default:
+      return 'default';
+  }
+};
+
+const getReaderStatusColor = (status: ReaderStatus) => {
   switch (status) {
     case 'OK':
       return 'success';
@@ -51,12 +64,28 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
         <Typography variant="h6" component="div">
           Validador {validator.id}
         </Typography>
-        <Chip
-          label={validator.status}
-          color={getStatusColor(validator.status)}
-          size="small"
-          sx={{ mt: 1 }}
-        />
+        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+          <Chip
+            label={validator.status}
+            color={getStatusColor(validator.status)}
+            size="small"
+          />
+        </Stack>
+        <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+          Estado de los Lectores:
+        </Typography>
+        <Stack direction="row" spacing={1}>
+          <Chip
+            label={`RFID: ${validator.rfidStatus}`}
+            color={getReaderStatusColor(validator.rfidStatus)}
+            size="small"
+          />
+          <Chip
+            label={`EMV: ${validator.emvStatus}`}
+            color={getReaderStatusColor(validator.emvStatus)}
+            size="small"
+          />
+        </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           Bus ID: {validator.busId}
         </Typography>
