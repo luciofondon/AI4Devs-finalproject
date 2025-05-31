@@ -70,3 +70,26 @@ Me puedes mostrar todos los endpoiint configurados
 
 
 Ahora vamos a empezar con el frontend donde agregaremos toda la configuracion en la carpeta frontend de la raiz del proyecto 
+
+
+prefiero usar reqact query 
+
+Puedes hacer las llamada en el proyecto de @frontend  para atacar a la api de @backend 
+
+
+Veo que hay un problema de cors
+
+
+Ya funciona, faltaría la implementacion para las validadoras
+
+
+En el apartado de buses no veo que un bus pueda tener un pupitre, n validadoras y n cámaras
+
+Me gustaría implementar la vista detalle de un bus, una validadora y un pupitre
+
+Quiero navegar desde el detalle de un bus a la vista detalle del pupitre, validadora o cámaras
+
+
+Me podrías mejorar el diseño del listado y de la vista detalle, teniendo en cuenta que en el listado no hace falta que se muestren los componentes
+
+En cada bus solo tienens que mostrar el pupitre asociado al bus, las cámaras y las validadoras asociada a dicho bus
