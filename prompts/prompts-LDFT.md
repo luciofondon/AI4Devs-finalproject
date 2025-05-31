@@ -93,3 +93,17 @@ Quiero navegar desde el detalle de un bus a la vista detalle del pupitre, valida
 Me podrías mejorar el diseño del listado y de la vista detalle, teniendo en cuenta que en el listado no hace falta que se muestren los componentes
 
 En cada bus solo tienens que mostrar el pupitre asociado al bus, las cámaras y las validadoras asociada a dicho bus
+
+
+Me podrías configurar el entorno de test e2e con cypress y crear una carpeta dentro del proyecto de 
+
+
+
+Me podrías configurar el entorno de test e2e con cypress y crear una carpeta dentro del proyecto de 
+
+ReferenceError: exports is not defined in ES module scope
+
+
+Your configFile is invalid: /home/plxadmin/Escritorio/MASTER/AI4Devs-finalproject/frontend/cypress.config.ts
+
+It threw an error when required, check the stack trace below:
