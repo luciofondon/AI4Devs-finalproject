@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "busId": "1",
+    "status": "OK",
+    "createdAt": "2024-03-31T10:00:00Z",
+    "updatedAt": "2024-03-31T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "busId": "1",
+    "status": "OK",
+    "createdAt": "2024-03-31T10:00:00Z",
+    "updatedAt": "2024-03-31T10:00:00Z"
+  }
+] 

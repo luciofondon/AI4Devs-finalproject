@@ -59,33 +59,32 @@ Me podrías mostrar una descripción breve del proyecto en formato markdown.
 
 **Prompt 1:**
 
+Teniendo en cuenta el @readme.md  me podrías definir un diagrama de arquitectura
+
 **Prompt 2:**
 
+Las tecnologías para el front será React con Typescript y en el back se desarrollará con NodeJS usando el framework NestJS
+
 **Prompt 3:**
+
+Ten en cuenta que el back para saber el estado de los diferentes autobuses lo obtendrá a través de una BD diferente a la del proyecto
+
 
 ### **2.2. Descripción de componentes principales:**
 
-**Prompt 1:**
 
-**Prompt 2:**
-
-**Prompt 3:**
 
 ### **2.3. Descripción de alto nivel del proyecto y estructura de ficheros**
 
 **Prompt 1:**
 
-**Prompt 2:**
+Me podrías definir  una descripción a alto nivel del proyecto y una estructura de ficheros 
 
-**Prompt 3:**
 
 ### **2.4. Infraestructura y despliegue**
 
 **Prompt 1:**
-
-**Prompt 2:**
-
-**Prompt 3:**
+Me podrías definir un diagrama de infrastructura del proyecto 
 
 ### **2.5. Seguridad**
 
@@ -99,9 +98,7 @@ Me podrías mostrar una descripción breve del proyecto en formato markdown.
 
 **Prompt 1:**
 
-**Prompt 2:**
-
-**Prompt 3:**
+Se ralizarán los test unitarios, test de componentes y test e2e utilizando cypress, me podrías hacer una descipción breve
 
 ---
 
@@ -109,9 +106,8 @@ Me podrías mostrar una descripción breve del proyecto en formato markdown.
 
 **Prompt 1:**
 
-**Prompt 2:**
+Me podrías definir en formato marmaid el diagrama del modelo de datos.
 
-**Prompt 3:**
 
 ---
 
@@ -119,9 +115,12 @@ Me podrías mostrar una descripción breve del proyecto en formato markdown.
 
 **Prompt 1:**
 
+Me podrías definir como máximo 3 endpoint del backend hacia el front en formato OpenApi
+
 **Prompt 2:**
 
-**Prompt 3:**
+La actualización de un componente no se podra hacer nunca desde el front
+
 
 ---
 
@@ -129,15 +128,21 @@ Me podrías mostrar una descripción breve del proyecto en formato markdown.
 
 **Prompt 1:**
 
+Me podrías defrinir 3 historias de usuarios
+
 **Prompt 2:**
 
-**Prompt 3:**
+La estimación de se realizará en cadena de Fibonacci
+
 
 ---
 
 ### 6. Tickets de Trabajo
 
 **Prompt 1:**
+
+Documenta 3 de los tickets de trabajo principales del desarrollo, uno de backend, uno de frontend, y uno de bases de datos. Da todo el detalle requerido para desarrollar la tarea de inicio a fin teniendo en cuenta las buenas prácticas al respecto. 
+
 
 **Prompt 2:**
 

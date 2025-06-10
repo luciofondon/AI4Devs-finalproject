@@ -1,0 +1,60 @@
+name: CI Monorepo
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Ejecutar tests unitarios
+        run: npm test
+        working-directory: ./frontend
+
+      - name: Construir la aplicación
+        run: npm run build
+        working-directory: ./frontend
+
+      - name: Ejecutar tests e2e (Cypress)
+        run: npm run test:e2e
+        working-directory: ./frontend
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias
+        run: npm ci
+        working-directory: ./backend
+
+      - name: Ejecutar pruebas unitarias
+        run: npm run test
+        working-directory: ./backend
+
+      - name: Construir la aplicación
+        run: npm run build
+        working-directory: ./backend 

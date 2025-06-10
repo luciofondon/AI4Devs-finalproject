@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "status": "OK",
+    "createdAt": "2024-03-31T10:00:00Z",
+    "updatedAt": "2024-03-31T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "status": "WARNING",
+    "createdAt": "2024-03-31T10:00:00Z",
+    "updatedAt": "2024-03-31T10:00:00Z"
+  },
+  {
+    "id": "3",
+    "status": "KO",
+    "createdAt": "2024-03-31T10:00:00Z",
+    "updatedAt": "2024-03-31T10:00:00Z"
+  }
+] 
