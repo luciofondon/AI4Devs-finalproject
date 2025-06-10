@@ -24,29 +24,38 @@ export class DevicesService {
   // Métodos para Buses
   async findAllBuses(status?: BusStatus): Promise<Bus[]> {
     this.logger.debug(`findAllBuses called with status: ${status}`);
+    const buses = await this.busRepository.find({
+      relations: ['pupitres', 'validators']
+    });
+    
+    // Añadir el estado calculado a cada bus
+    const busesWithStatus = buses.map(bus => ({
+      ...bus,
+      status: this.calculateBusStatus(bus)
+    }));
+
     if (status) {
-      const buses = await this.busRepository.createQueryBuilder('bus')
-        .where('bus.status = :status', { status })
-        .getMany();
-      this.logger.debug(`Found ${buses.length} buses with status ${status}`);
-      return buses;
+      const filteredBuses = busesWithStatus.filter(bus => bus.status === status);
+      this.logger.debug(`Found ${filteredBuses.length} buses with status ${status}`);
+      return filteredBuses;
     }
-    const allBuses = await this.busRepository.find();
-    this.logger.debug(`Found ${allBuses.length} buses without status filter`);
-    return allBuses;
+    this.logger.debug(`Found ${buses.length} buses without status filter`);
+    return busesWithStatus;
   }
 
   async findBusById(id: string): Promise<Bus | null> {
-    return this.busRepository.findOne({ where: { id } });
-  }
-
-  async updateBusStatus(id: string, status: BusStatus): Promise<Bus> {
-    const bus = await this.findBusById(id);
-    if (!bus) {
-      throw new Error(`Bus with ID ${id} not found`);
+    const bus = await this.busRepository.findOne({ 
+      where: { id },
+      relations: ['pupitres', 'validators']
+    });
+    
+    if (bus) {
+      return {
+        ...bus,
+        status: this.calculateBusStatus(bus)
+      };
     }
-    bus.status = status;
-    return this.busRepository.save(bus);
+    return null;
   }
 
   // Métodos para Pupitres
@@ -74,7 +83,9 @@ export class DevicesService {
       throw new Error(`Pupitre with ID ${id} not found`);
     }
     pupitre.status = status;
-    return this.pupitreRepository.save(pupitre);
+    const savedPupitre = await this.pupitreRepository.save(pupitre);
+    await this.recalculateBusStatus(pupitre.busId);
+    return savedPupitre;
   }
 
   // Métodos para Validadores
@@ -102,7 +113,9 @@ export class DevicesService {
       throw new Error(`Validator with ID ${id} not found`);
     }
     validator.status = status;
-    return this.validatorRepository.save(validator);
+    const savedValidator = await this.validatorRepository.save(validator);
+    await this.recalculateBusStatus(validator.busId);
+    return savedValidator;
   }
 
   // Métodos para Cámaras
@@ -131,5 +144,28 @@ export class DevicesService {
     }
     camera.status = status;
     return this.cameraRepository.save(camera);
+  }
+
+  private async recalculateBusStatus(busId: string): Promise<void> {
+    // Obtener todos los pupitres y validadores del bus
+    const pupitres = await this.pupitreRepository.find({ where: { busId } });
+    const validators = await this.validatorRepository.find({ where: { busId } });
+
+    // El estado del bus se calcula dinámicamente, no se almacena en la BD
+    // Por lo tanto, no es necesario actualizar el estado del bus aquí
+  }
+
+  // Método para calcular el estado del bus en caliente
+  private calculateBusStatus(bus: Bus): BusStatus {
+    const pupitres = bus.pupitres || [];
+    const validators = bus.validators || [];
+
+    if (pupitres.some(p => p.status === PupitreStatus.KO) || validators.some(v => v.status === ValidatorStatus.KO)) {
+      return BusStatus.KO;
+    }
+    if (pupitres.some(p => p.status === PupitreStatus.WARNING) || validators.some(v => v.status === ValidatorStatus.WARNING)) {
+      return BusStatus.WARNING;
+    }
+    return BusStatus.OK;
   }
 } 

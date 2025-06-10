@@ -28,18 +28,6 @@ export class DevicesController {
     return bus;
   }
 
-  @Put('buses/:id/status')
-  async updateBusStatus(
-    @Param('id') id: string,
-    @Body('status') status: BusStatus,
-  ): Promise<Bus> {
-    const bus = await this.devicesService.findBusById(id);
-    if (!bus) {
-      throw new NotFoundException(`Bus with ID ${id} not found`);
-    }
-    return this.devicesService.updateBusStatus(id, status);
-  }
-
   @Get('pupitres')
   async findAllPupitres(@Query('status') status?: string): Promise<Pupitre[]> {
     console.log('Valor recibido en status (pupitres):', status);

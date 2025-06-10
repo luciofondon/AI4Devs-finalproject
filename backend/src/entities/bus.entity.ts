@@ -14,12 +14,8 @@ export class Bus {
   @PrimaryColumn({ length: 4 })
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: BusStatus,
-    default: BusStatus.OK,
-  })
-  status: BusStatus;
+  @Column({ type: 'enum', enum: BusStatus, nullable: true })
+  status?: BusStatus;
 
   @OneToMany(() => Pupitre, pupitre => pupitre.bus)
   pupitres: Pupitre[];
