@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Put, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Param, Put, Body, NotFoundException, Query } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { Bus, BusStatus } from '../../entities/bus.entity';
 import { Pupitre, PupitreStatus } from '../../entities/pupitre.entity';
@@ -10,8 +10,13 @@ export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
   @Get('buses')
-  async findAllBuses(): Promise<Bus[]> {
-    return this.devicesService.findAllBuses();
+  async findAllBuses(@Query('status') status?: string): Promise<Bus[]> {
+    console.log('Valor recibido en status (buses):', status);
+    const statusEnum = status?.toUpperCase() as BusStatus;
+    if (!Object.values(BusStatus).includes(statusEnum)) {
+      return this.devicesService.findAllBuses();
+    }
+    return this.devicesService.findAllBuses(statusEnum);
   }
 
   @Get('buses/:id')
@@ -36,8 +41,10 @@ export class DevicesController {
   }
 
   @Get('pupitres')
-  async findAllPupitres(): Promise<Pupitre[]> {
-    return this.devicesService.findAllPupitres();
+  async findAllPupitres(@Query('status') status?: string): Promise<Pupitre[]> {
+    console.log('Valor recibido en status (pupitres):', status);
+    const statusEnum = status && Object.values(PupitreStatus).includes(status as PupitreStatus) ? status as PupitreStatus : undefined;
+    return this.devicesService.findAllPupitres(statusEnum);
   }
 
   @Get('pupitres/:id')
@@ -62,8 +69,10 @@ export class DevicesController {
   }
 
   @Get('validators')
-  async findAllValidators(): Promise<Validator[]> {
-    return this.devicesService.findAllValidators();
+  async findAllValidators(@Query('status') status?: string): Promise<Validator[]> {
+    console.log('Valor recibido en status (validators):', status);
+    const statusEnum = status && Object.values(ValidatorStatus).includes(status as ValidatorStatus) ? status as ValidatorStatus : undefined;
+    return this.devicesService.findAllValidators(statusEnum);
   }
 
   @Get('validators/:id')

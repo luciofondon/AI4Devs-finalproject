@@ -1,15 +1,19 @@
-import { Container, Grid, Typography } from '@mui/material';
+import { Container, Grid, Typography, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { devicesService } from '../../services/devices';
 import { ValidatorStatus } from '../../components/ValidatorStatus/ValidatorStatus';
 import { LoadingOverlay } from '../../components/LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
+import { useState } from 'react';
+import type { Validator } from '../../types';
 
 const ValidatorsPage = () => {
-  const { data: validators, isLoading, error } = useQuery({
-    queryKey: ['validators'],
-    queryFn: devicesService.getValidators,
+  const [statusFilter, setStatusFilter] = useState<Validator['status'] | 'ALL'>('ALL');
+
+  const { data: validators, isLoading, error } = useQuery<Validator[]>({
+    queryKey: ['validators', statusFilter],
+    queryFn: () => devicesService.getValidators(statusFilter === 'ALL' ? undefined : statusFilter),
   });
 
   if (isLoading) {
@@ -25,27 +29,36 @@ const ValidatorsPage = () => {
     );
   }
 
-  if (!validators || validators.length === 0) {
-    return (
-      <EmptyState
-        title="No hay validadoras"
-        message="No se encontraron validadoras en el sistema"
-      />
-    );
-  }
-
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Validadoras
       </Typography>
-      <Grid container spacing={3}>
-        {validators.map((validator) => (
-          <Grid item xs={12} sm={6} md={4} key={validator.id}>
-            <ValidatorStatus validator={validator} />
-          </Grid>
-        ))}
-      </Grid>
+      <ToggleButtonGroup
+        value={statusFilter}
+        exclusive
+        onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
+        sx={{ mb: 2 }}
+      >
+        <ToggleButton value="ALL">Todos</ToggleButton>
+        <ToggleButton value="OK">OK</ToggleButton>
+        <ToggleButton value="WARNING">WARNING</ToggleButton>
+        <ToggleButton value="KO">KO</ToggleButton>
+      </ToggleButtonGroup>
+      {(!validators || validators.length === 0) ? (
+        <EmptyState
+          title="No hay validadoras"
+          message="No se encontraron validadoras en el sistema"
+        />
+      ) : (
+        <Grid container spacing={3}>
+          {validators.map((validator) => (
+            <Grid item xs={12} sm={6} md={4} key={validator.id}>
+              <ValidatorStatus validator={validator} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 };

@@ -22,8 +22,18 @@ export class DevicesService {
   ) {}
 
   // Métodos para Buses
-  async findAllBuses(): Promise<Bus[]> {
-    return this.busRepository.find();
+  async findAllBuses(status?: BusStatus): Promise<Bus[]> {
+    this.logger.debug(`findAllBuses called with status: ${status}`);
+    if (status) {
+      const buses = await this.busRepository.createQueryBuilder('bus')
+        .where('bus.status = :status', { status })
+        .getMany();
+      this.logger.debug(`Found ${buses.length} buses with status ${status}`);
+      return buses;
+    }
+    const allBuses = await this.busRepository.find();
+    this.logger.debug(`Found ${allBuses.length} buses without status filter`);
+    return allBuses;
   }
 
   async findBusById(id: string): Promise<Bus | null> {
@@ -40,8 +50,18 @@ export class DevicesService {
   }
 
   // Métodos para Pupitres
-  async findAllPupitres(): Promise<Pupitre[]> {
-    return this.pupitreRepository.find();
+  async findAllPupitres(status?: PupitreStatus): Promise<Pupitre[]> {
+    this.logger.debug(`findAllPupitres called with status: ${status}`);
+    if (status) {
+      const pupitres = await this.pupitreRepository.createQueryBuilder('pupitre')
+        .where('pupitre.status = :status', { status })
+        .getMany();
+      this.logger.debug(`Found ${pupitres.length} pupitres with status ${status}`);
+      return pupitres;
+    }
+    const allPupitres = await this.pupitreRepository.find();
+    this.logger.debug(`Found ${allPupitres.length} pupitres without status filter`);
+    return allPupitres;
   }
 
   async findPupitreById(id: string): Promise<Pupitre | null> {
@@ -58,8 +78,18 @@ export class DevicesService {
   }
 
   // Métodos para Validadores
-  async findAllValidators(): Promise<Validator[]> {
-    return this.validatorRepository.find();
+  async findAllValidators(status?: ValidatorStatus): Promise<Validator[]> {
+    this.logger.debug(`findAllValidators called with status: ${status}`);
+    if (status) {
+      const validators = await this.validatorRepository.createQueryBuilder('validator')
+        .where('validator.status = :status', { status })
+        .getMany();
+      this.logger.debug(`Found ${validators.length} validators with status ${status}`);
+      return validators;
+    }
+    const allValidators = await this.validatorRepository.find();
+    this.logger.debug(`Found ${allValidators.length} validators without status filter`);
+    return allValidators;
   }
 
   async findValidatorById(id: string): Promise<Validator | null> {

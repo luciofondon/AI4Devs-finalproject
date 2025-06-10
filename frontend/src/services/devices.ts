@@ -4,8 +4,8 @@ import { BusStatus, PupitreStatus, ValidatorStatus, CameraStatus } from '../type
 
 export const devicesService = {
   // Buses
-  getBuses: async (): Promise<Bus[]> => {
-    const response = await api.get('/buses');
+  getBuses: async (status?: BusStatus): Promise<Bus[]> => {
+    const response = await api.get('/buses', { params: { status } });
     return response.data;
   },
 
@@ -20,8 +20,8 @@ export const devicesService = {
   },
 
   // Pupitres
-  getPupitres: async (): Promise<Pupitre[]> => {
-    const response = await api.get('/pupitres');
+  getPupitres: async (status?: PupitreStatus): Promise<Pupitre[]> => {
+    const response = await api.get('/pupitres', { params: { status } });
     return response.data;
   },
 
@@ -36,8 +36,8 @@ export const devicesService = {
   },
 
   // Validadores
-  getValidators: async (): Promise<Validator[]> => {
-    const response = await api.get('/validators');
+  getValidators: async (status?: ValidatorStatus): Promise<Validator[]> => {
+    const response = await api.get('/validators', { params: { status } });
     return response.data;
   },
 
