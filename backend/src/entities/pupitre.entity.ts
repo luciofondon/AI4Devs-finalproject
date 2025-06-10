@@ -32,12 +32,8 @@ export class Pupitre {
   @PrimaryColumn({ length: 8 })
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: PupitreStatus,
-    default: PupitreStatus.OK,
-  })
-  status: PupitreStatus;
+  // Campo calculado, no se almacena en la BD
+  status?: PupitreStatus;
 
   @Column({ name: 'bus_id', length: 4, nullable: false })
   busId: string;

@@ -17,12 +17,20 @@ export class Validator {
   @PrimaryColumn({ length: 8 })
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: ValidatorStatus,
-    default: ValidatorStatus.OK,
-  })
-  status: ValidatorStatus;
+  // Campo calculado, no se almacena en la BD
+  status?: ValidatorStatus;
+
+  @Column({ name: 'bus_id', length: 4, nullable: false })
+  busId: string;
+
+  @ManyToOne(() => Bus, bus => bus.validators)
+  bus: Bus;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @Column({
     type: 'enum',
@@ -39,16 +47,4 @@ export class Validator {
     name: 'emv_status',
   })
   emvStatus: ReaderStatus;
-
-  @Column({ name: 'bus_id', length: 4 })
-  busId: string;
-
-  @ManyToOne(() => Bus, bus => bus.validators)
-  bus: Bus;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 } 
