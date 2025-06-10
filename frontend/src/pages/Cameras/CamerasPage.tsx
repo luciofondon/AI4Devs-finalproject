@@ -1,15 +1,19 @@
-import { Container, Typography, Grid, Box } from '@mui/material';
+import { Container, Typography, Grid, Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { devicesService } from '../../services/devices';
 import { LoadingOverlay } from '../../components/LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import { CameraStatus } from '../../components/CameraStatus/CameraStatus';
+import { useState } from 'react';
+import type { Camera } from '../../types';
 
 export const CamerasPage = () => {
-  const { data: cameras, isLoading, error } = useQuery({
-    queryKey: ['cameras'],
-    queryFn: devicesService.getCameras,
+  const [statusFilter, setStatusFilter] = useState<Camera['status'] | 'ALL'>('ALL');
+
+  const { data: cameras, isLoading, error } = useQuery<Camera[]>({
+    queryKey: ['cameras', statusFilter],
+    queryFn: () => devicesService.getCameras(statusFilter === 'ALL' ? undefined : statusFilter),
   });
 
   if (isLoading) {
@@ -25,28 +29,35 @@ export const CamerasPage = () => {
     );
   }
 
-  if (!cameras || cameras.length === 0) {
-    return (
-      <EmptyState
-        title="No hay cámaras"
-        message="No se encontraron cámaras en el sistema"
-      />
-    );
-  }
-
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Cámaras
       </Typography>
-
-      <Grid container spacing={3}>
-        {cameras.map((camera) => (
-          <Grid item xs={12} sm={6} md={4} key={camera.id}>
-            <CameraStatus camera={camera} />
-          </Grid>
-        ))}
-      </Grid>
+      <ToggleButtonGroup
+        value={statusFilter}
+        exclusive
+        onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
+        sx={{ mb: 2 }}
+      >
+        <ToggleButton value="ALL">Todos</ToggleButton>
+        <ToggleButton value="OK">OK</ToggleButton>
+        <ToggleButton value="KO">KO</ToggleButton>
+      </ToggleButtonGroup>
+      {(!cameras || cameras.length === 0) ? (
+        <EmptyState
+          title="No hay cámaras"
+          message="No se encontraron cámaras en el sistema"
+        />
+      ) : (
+        <Grid container spacing={3}>
+          {cameras.map((camera) => (
+            <Grid item xs={12} sm={6} md={4} key={camera.id}>
+              <CameraStatus camera={camera} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 }; 

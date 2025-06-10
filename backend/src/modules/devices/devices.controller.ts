@@ -43,7 +43,10 @@ export class DevicesController {
   @Get('pupitres')
   async findAllPupitres(@Query('status') status?: string): Promise<Pupitre[]> {
     console.log('Valor recibido en status (pupitres):', status);
-    const statusEnum = status && Object.values(PupitreStatus).includes(status as PupitreStatus) ? status as PupitreStatus : undefined;
+    const statusEnum = status?.toUpperCase() as PupitreStatus;
+    if (!Object.values(PupitreStatus).includes(statusEnum)) {
+      return this.devicesService.findAllPupitres();
+    }
     return this.devicesService.findAllPupitres(statusEnum);
   }
 
@@ -71,7 +74,10 @@ export class DevicesController {
   @Get('validators')
   async findAllValidators(@Query('status') status?: string): Promise<Validator[]> {
     console.log('Valor recibido en status (validators):', status);
-    const statusEnum = status && Object.values(ValidatorStatus).includes(status as ValidatorStatus) ? status as ValidatorStatus : undefined;
+    const statusEnum = status?.toUpperCase() as ValidatorStatus;
+    if (!Object.values(ValidatorStatus).includes(statusEnum)) {
+      return this.devicesService.findAllValidators();
+    }
     return this.devicesService.findAllValidators(statusEnum);
   }
 
@@ -97,8 +103,13 @@ export class DevicesController {
   }
 
   @Get('cameras')
-  async findAllCameras(): Promise<Camera[]> {
-    return this.devicesService.findAllCameras();
+  async findAllCameras(@Query('status') status?: string): Promise<Camera[]> {
+    console.log('Valor recibido en status (cameras):', status);
+    const statusEnum = status?.toUpperCase() as CameraStatus;
+    if (!Object.values(CameraStatus).includes(statusEnum)) {
+      return this.devicesService.findAllCameras();
+    }
+    return this.devicesService.findAllCameras(statusEnum);
   }
 
   @Get('cameras/:id')

@@ -106,8 +106,18 @@ export class DevicesService {
   }
 
   // Métodos para Cámaras
-  async findAllCameras(): Promise<Camera[]> {
-    return this.cameraRepository.find();
+  async findAllCameras(status?: CameraStatus): Promise<Camera[]> {
+    this.logger.debug(`findAllCameras called with status: ${status}`);
+    if (status) {
+      const cameras = await this.cameraRepository.createQueryBuilder('camera')
+        .where('camera.status = :status', { status })
+        .getMany();
+      this.logger.debug(`Found ${cameras.length} cameras with status ${status}`);
+      return cameras;
+    }
+    const allCameras = await this.cameraRepository.find();
+    this.logger.debug(`Found ${allCameras.length} cameras without status filter`);
+    return allCameras;
   }
 
   async findCameraById(id: string): Promise<Camera | null> {
