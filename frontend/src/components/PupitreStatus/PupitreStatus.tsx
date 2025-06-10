@@ -5,6 +5,15 @@ import { usePupitreStatus } from '../../hooks/usePupitreStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
+import PrintIcon from '@mui/icons-material/Print';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import QrCodeIcon from '@mui/icons-material/QrCode';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import ContactlessIcon from '@mui/icons-material/Contactless';
 
 interface PupitreStatusProps {
   pupitre: Pupitre;
@@ -95,6 +104,78 @@ const getGPSStatusColor = (status: GPSStatus) => {
   }
 };
 
+const getStatusIcon = (status: Pupitre['status']) => {
+  switch (status) {
+    case 'OK':
+      return <CheckCircleIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
+const getReaderStatusIcon = (status: ReaderStatus) => {
+  switch (status) {
+    case 'OK':
+      return <CheckCircleIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
+const getPrinterStatusIcon = (status: PrinterStatus) => {
+  switch (status) {
+    case 'OK':
+      return <PrintIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    case 'NO_PAPER':
+    case 'NO_RIBBON':
+      return <WarningIcon color="warning" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
+const getModemStatusIcon = (status: ModemStatus) => {
+  switch (status) {
+    case 'OK':
+      return <SignalCellularAltIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    case 'NO_SIGNAL':
+      return <ErrorIcon color="error" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
+const getGPSStatusIcon = (status: GPSStatus) => {
+  switch (status) {
+    case 'OK':
+      return <GpsFixedIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    case 'NO_SIGNAL':
+      return <ErrorIcon color="error" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
 export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
   const navigate = useNavigate();
   const { updateStatus, isUpdating, error, isSuccess } = usePupitreStatus();
@@ -129,6 +210,7 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
           color={getStatusColor(pupitre.status)}
           size="small"
           sx={{ mt: 1 }}
+          icon={getStatusIcon(pupitre.status)}
         />
 
         <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
@@ -136,19 +218,22 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
         </Typography>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Chip
-            label={`QR: ${pupitre.qrStatus}`}
+            label={pupitre.qrStatus}
             color={getReaderStatusColor(pupitre.qrStatus)}
             size="small"
+            icon={<QrCodeIcon />}
           />
           <Chip
-            label={`RFID: ${pupitre.rfidStatus}`}
+            label={pupitre.rfidStatus}
             color={getReaderStatusColor(pupitre.rfidStatus)}
             size="small"
+            icon={<ContactlessIcon />}
           />
           <Chip
-            label={`EMV: ${pupitre.emvStatus}`}
+            label={pupitre.emvStatus}
             color={getReaderStatusColor(pupitre.emvStatus)}
             size="small"
+            icon={<CreditCardIcon />}
           />
         </Stack>
 
@@ -160,6 +245,7 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
             label={pupitre.printerStatus}
             color={getPrinterStatusColor(pupitre.printerStatus)}
             size="small"
+            icon={getPrinterStatusIcon(pupitre.printerStatus)}
           />
         </Stack>
 
@@ -168,14 +254,16 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
         </Typography>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
           <Chip
-            label={`Módem: ${pupitre.modemStatus}`}
+            label={pupitre.modemStatus}
             color={getModemStatusColor(pupitre.modemStatus)}
             size="small"
+            icon={getModemStatusIcon(pupitre.modemStatus)}
           />
           <Chip
-            label={`GPS: ${pupitre.gpsStatus}`}
+            label={pupitre.gpsStatus}
             color={getGPSStatusColor(pupitre.gpsStatus)}
             size="small"
+            icon={getGPSStatusIcon(pupitre.gpsStatus)}
           />
         </Stack>
 

@@ -5,6 +5,11 @@ import { useValidatorStatus } from '../../hooks/useValidatorStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import ErrorIcon from '@mui/icons-material/Error';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import ContactlessIcon from '@mui/icons-material/Contactless';
 
 interface ValidatorStatusProps {
   validator: Validator;
@@ -49,6 +54,32 @@ const getReaderStatusColor = (status: ReaderStatus) => {
   }
 };
 
+const getStatusIcon = (status: Validator['status']) => {
+  switch (status) {
+    case 'OK':
+      return <CheckCircleIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
+const getReaderStatusIcon = (status: ReaderStatus) => {
+  switch (status) {
+    case 'OK':
+      return <CheckCircleIcon color="success" />;
+    case 'WARNING':
+      return <WarningIcon color="warning" />;
+    case 'KO':
+      return <ErrorIcon color="error" />;
+    default:
+      return <ErrorIcon color="error" />;
+  }
+};
+
 export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
   const navigate = useNavigate();
   const { updateStatus, isUpdating, error, isSuccess } = useValidatorStatus();
@@ -83,20 +114,23 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
           color={getStatusColor(validator.status)}
           size="small"
           sx={{ mt: 1 }}
+          icon={getStatusIcon(validator.status)}
         />
         <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
           Estado de los Lectores:
         </Typography>
         <Stack direction="row" spacing={1}>
           <Chip
-            label={`RFID: ${validator.rfidStatus}`}
+            label={validator.rfidStatus}
             color={getReaderStatusColor(validator.rfidStatus)}
             size="small"
+            icon={<ContactlessIcon />}
           />
           <Chip
-            label={`EMV: ${validator.emvStatus}`}
+            label={validator.emvStatus}
             color={getReaderStatusColor(validator.emvStatus)}
             size="small"
+            icon={<CreditCardIcon />}
           />
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
