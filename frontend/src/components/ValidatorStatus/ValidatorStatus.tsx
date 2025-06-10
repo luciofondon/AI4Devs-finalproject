@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Chip, Button, Stack } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Button, Stack, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Validator, ValidatorStatus as ValidatorStatusType, ReaderStatus } from '../../types';
 import { useValidatorStatus } from '../../hooks/useValidatorStatus';
@@ -105,18 +105,22 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
       onClick={handleClick}
     >
       <LoadingOverlay open={isUpdating} />
-      <CardContent>
-        <Typography variant="h6" component="div">
-          Validadora {validator.id}
-        </Typography>
-        <Chip
-          label={validator.status}
-          color={getStatusColor(validator.status)}
-          size="small"
-          sx={{ mt: 1 }}
-          icon={getStatusIcon(validator.status)}
-        />
-        <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mb: 2 }}>
+          <Chip
+            label={validator.status}
+            color={getStatusColor(validator.status)}
+            size="small"
+            icon={getStatusIcon(validator.status)}
+            sx={{ 
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+            }}
+          />
+        </Box>
+
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
           Estado de los Lectores:
         </Typography>
         <Stack direction="row" spacing={1}>

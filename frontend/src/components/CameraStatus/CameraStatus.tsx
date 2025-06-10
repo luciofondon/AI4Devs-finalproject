@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Chip, Stack } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Stack, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Camera, CameraStatus as CameraStatusType } from '../../types';
 import { useCameraStatus } from '../../hooks/useCameraStatus';
@@ -32,6 +32,17 @@ const getStatusBackgroundColor = (status: Camera['status']) => {
   }
 };
 
+const getStatusIcon = (status: Camera['status']) => {
+  switch (status) {
+    case 'OK':
+      return null;
+    case 'KO':
+      return null;
+    default:
+      return null;
+  }
+};
+
 export const CameraStatus = ({ camera }: CameraStatusProps) => {
   const navigate = useNavigate();
   const { updateStatus, isUpdating, error, isSuccess } = useCameraStatus();
@@ -57,17 +68,24 @@ export const CameraStatus = ({ camera }: CameraStatusProps) => {
       onClick={handleClick}
     >
       <LoadingOverlay open={isUpdating} />
-      <CardContent>
-        <Typography variant="h6" component="div">
-          Cámara {camera.id}
-        </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mb: 2 }}>
           <Chip
             label={camera.status}
             color={getStatusColor(camera.status)}
             size="small"
+            icon={getStatusIcon(camera.status)}
+            sx={{ 
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+            }}
           />
-        </Stack>
+        </Box>
+
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+          Estado de la Cámara:
+        </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           Bus ID: {camera.busId}
         </Typography>

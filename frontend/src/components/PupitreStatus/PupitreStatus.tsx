@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Chip, Button, Stack, Divider } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Button, Stack, Divider, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Pupitre, PupitreStatus as PupitreStatusType, ReaderStatus, PrinterStatus, ModemStatus, GPSStatus } from '../../types';
 import { usePupitreStatus } from '../../hooks/usePupitreStatus';
@@ -201,19 +201,23 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
       onClick={handleClick}
     >
       <LoadingOverlay open={isUpdating} />
-      <CardContent>
-        <Typography variant="h6" component="div">
-          Pupitre {pupitre.id}
-        </Typography>
-        <Chip
-          label={pupitre.status}
-          color={getStatusColor(pupitre.status)}
-          size="small"
-          sx={{ mt: 1 }}
-          icon={getStatusIcon(pupitre.status)}
-        />
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mb: 2 }}>
+          <Chip
+            label={pupitre.status}
+            color={getStatusColor(pupitre.status)}
+            size="small"
+            icon={getStatusIcon(pupitre.status)}
+            sx={{ 
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              px: 1
+            }}
+          />
+        </Box>
 
-        <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
           Estado de los Lectores:
         </Typography>
         <Stack direction="row" spacing={1} sx={{ mb: 2 }}>

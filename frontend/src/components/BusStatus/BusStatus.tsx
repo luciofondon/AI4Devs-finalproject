@@ -55,21 +55,16 @@ export const BusStatus = ({ bus, pupitres, validators, cameras }: BusStatusProps
       sx={{ 
         position: 'relative',
         cursor: 'pointer',
-        '&:hover': { boxShadow: 6 },
-        backgroundColor: getStatusBackgroundColor(bus.status),
-        border: `2px solid`,
-        borderColor: (theme) => {
-          switch (bus.status) {
-            case 'OK': return theme.palette.success.main;
-            case 'WARNING': return theme.palette.warning.main;
-            case 'KO': return theme.palette.error.main;
-            default: return theme.palette.grey[300];
-          }
-        },
-        minHeight: 210,
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        minWidth: { xs: '320px', sm: '350px' },
+        '&:hover': {
+          boxShadow: 6,
+        },
+        backgroundColor: getStatusBackgroundColor(bus.status),
+        border: 'none',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
       }}
       onClick={handleClick}
     >
