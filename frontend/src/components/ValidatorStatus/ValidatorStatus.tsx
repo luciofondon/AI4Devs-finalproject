@@ -23,6 +23,19 @@ const getStatusColor = (status: Validator['status']) => {
   }
 };
 
+const getStatusBackgroundColor = (status: Validator['status']) => {
+  switch (status) {
+    case 'OK':
+      return 'rgba(76, 175, 80, 0.1)'; // verde claro
+    case 'WARNING':
+      return 'rgba(255, 152, 0, 0.1)'; // amarillo claro
+    case 'KO':
+      return 'rgba(244, 67, 54, 0.1)'; // rojo claro
+    default:
+      return 'transparent';
+  }
+};
+
 const getReaderStatusColor = (status: ReaderStatus) => {
   switch (status) {
     case 'OK':
@@ -56,21 +69,21 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
         '&:hover': {
           boxShadow: 6,
         },
+        backgroundColor: getStatusBackgroundColor(validator.status),
       }}
       onClick={handleClick}
     >
       <LoadingOverlay open={isUpdating} />
       <CardContent>
         <Typography variant="h6" component="div">
-          Validador {validator.id}
+          Validadora {validator.id}
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-          <Chip
-            label={validator.status}
-            color={getStatusColor(validator.status)}
-            size="small"
-          />
-        </Stack>
+        <Chip
+          label={validator.status}
+          color={getStatusColor(validator.status)}
+          size="small"
+          sx={{ mt: 1 }}
+        />
         <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
           Estado de los Lectores:
         </Typography>
@@ -92,44 +105,6 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
         <Typography variant="body2" color="text.secondary">
           Última actualización: {new Date(validator.updatedAt).toLocaleString()}
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-          <Button
-            size="small"
-            variant="outlined"
-            color="success"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('OK' as ValidatorStatusType);
-            }}
-            disabled={isUpdating || validator.status === 'OK'}
-          >
-            OK
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="warning"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('WARNING' as ValidatorStatusType);
-            }}
-            disabled={isUpdating || validator.status === 'WARNING'}
-          >
-            WARNING
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="error"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('KO' as ValidatorStatusType);
-            }}
-            disabled={isUpdating || validator.status === 'KO'}
-          >
-            KO
-          </Button>
-        </Stack>
         {error && (
           <ErrorMessage
             title="Error al actualizar el estado"

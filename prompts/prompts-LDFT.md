@@ -125,3 +125,8 @@ It threw an error when required, check the stack trace below:
 
 # Prompt infrastructura
  Ten en cuenta que en @frontend  tenemos test unitarios y test e2e con cypress
+
+
+
+
+ Me puedes añadir un readme en la raiz del proyecto que explique como se despliega el frontend y el backend y la BD con docker 

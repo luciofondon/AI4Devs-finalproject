@@ -23,6 +23,19 @@ const getStatusColor = (status: Pupitre['status']) => {
   }
 };
 
+const getStatusBackgroundColor = (status: Pupitre['status']) => {
+  switch (status) {
+    case 'OK':
+      return 'rgba(76, 175, 80, 0.1)'; // verde claro
+    case 'WARNING':
+      return 'rgba(255, 152, 0, 0.1)'; // amarillo claro
+    case 'KO':
+      return 'rgba(244, 67, 54, 0.1)'; // rojo claro
+    default:
+      return 'transparent';
+  }
+};
+
 const getReaderStatusColor = (status: ReaderStatus) => {
   switch (status) {
     case 'OK':
@@ -102,6 +115,7 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
         '&:hover': {
           boxShadow: 6,
         },
+        backgroundColor: getStatusBackgroundColor(pupitre.status),
       }}
       onClick={handleClick}
     >
@@ -110,13 +124,12 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
         <Typography variant="h6" component="div">
           Pupitre {pupitre.id}
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-          <Chip
-            label={pupitre.status}
-            color={getStatusColor(pupitre.status)}
-            size="small"
-          />
-        </Stack>
+        <Chip
+          label={pupitre.status}
+          color={getStatusColor(pupitre.status)}
+          size="small"
+          sx={{ mt: 1 }}
+        />
 
         <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
           Estado de los Lectores:
@@ -172,45 +185,6 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
         <Typography variant="body2" color="text.secondary">
           Última actualización: {new Date(pupitre.updatedAt).toLocaleString()}
         </Typography>
-
-        <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-          <Button
-            size="small"
-            variant="outlined"
-            color="success"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('OK' as PupitreStatusType);
-            }}
-            disabled={isUpdating || pupitre.status === 'OK'}
-          >
-            OK
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="warning"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('WARNING' as PupitreStatusType);
-            }}
-            disabled={isUpdating || pupitre.status === 'WARNING'}
-          >
-            WARNING
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="error"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('KO' as PupitreStatusType);
-            }}
-            disabled={isUpdating || pupitre.status === 'KO'}
-          >
-            KO
-          </Button>
-        </Stack>
 
         {error && (
           <ErrorMessage
