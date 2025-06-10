@@ -1,4 +1,4 @@
-name: CI Monorepo
+name: CI NeoBus
 
 on:
   push:
