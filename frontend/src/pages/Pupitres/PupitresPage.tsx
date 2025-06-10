@@ -32,9 +32,7 @@ export const PupitresPage = () => {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Pupitres
-      </Typography>
+  
       <ToggleButtonGroup
         value={statusFilter}
         exclusive
