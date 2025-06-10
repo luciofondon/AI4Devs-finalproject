@@ -55,9 +55,7 @@ export const BusDevices = ({ busId, pupitres, validators, cameras, isDetailView 
         {busPupitres.length > 0 && (
           <Paper sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <Typography variant="subtitle1" color="primary">
-                Pupitres
-              </Typography>
+
               {!isDetailView && (
                 <Button 
                   variant="text" 

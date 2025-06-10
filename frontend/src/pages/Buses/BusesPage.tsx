@@ -50,9 +50,7 @@ export const BusesPage = () => {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Buses
-      </Typography>
+
       <ToggleButtonGroup
         value={statusFilter}
         exclusive
