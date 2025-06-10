@@ -107,3 +107,21 @@ ReferenceError: exports is not defined in ES module scope
 Your configFile is invalid: /home/plxadmin/Escritorio/MASTER/AI4Devs-finalproject/frontend/cypress.config.ts
 
 It threw an error when required, check the stack trace below:
+
+
+# Prompt infrastructura
+
+"Escribe un script YAML para GitHub Actions que haga lo siguiente:
+ 
+ 1. Se active en cada push y pull request a la rama 'main'
+ 2. Instale las dependencias del proyecto
+ 3. Ejecute las pruebas unitarias
+ 4. Construya la aplicación"
+
+
+
+# Prompt infrastructura
+ Hazlo teniendo en cuenta @backend  y @frontend 
+
+# Prompt infrastructura
+ Ten en cuenta que en @frontend  tenemos test unitarios y test e2e con cypress
