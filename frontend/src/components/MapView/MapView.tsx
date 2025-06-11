@@ -43,9 +43,9 @@ export const MapView = ({ buses }: MapViewProps) => {
         const marker = L.marker([bus.latitude, bus.longitude], {
           icon: L.divIcon({
             className: 'custom-div-icon',
-            html: `<div style="background-color: ${getStatusColor(bus.status)}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
-            iconSize: [12, 12],
-            iconAnchor: [6, 6]
+            html: `<div style="background-color: ${getStatusColor(bus.status)}; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: white;">🚌</div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
           })
         });
 
