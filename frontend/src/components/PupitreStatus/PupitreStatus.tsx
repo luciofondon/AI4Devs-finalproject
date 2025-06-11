@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Chip, Button, Stack, Divider, Box } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Button, Stack, Divider, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Pupitre, PupitreStatus as PupitreStatusType, ReaderStatus, PrinterStatus, ModemStatus, GPSStatus } from '../../types';
 import { usePupitreStatus } from '../../hooks/usePupitreStatus';
@@ -14,6 +14,9 @@ import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ContactlessIcon from '@mui/icons-material/Contactless';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HelpIcon from '@mui/icons-material/Help';
 
 interface PupitreStatusProps {
   pupitre: Pupitre;
@@ -188,6 +191,11 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
     navigate(`/pupitres/${pupitre.id}`);
   };
 
+  const handleBusClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/buses/${pupitre.busId}`);
+  };
+
   return (
     <Card 
       sx={{ 
@@ -271,10 +279,29 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
           />
         </Stack>
 
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1,
+            mt: 'auto',
+            pt: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider'
+          }}
+        >
+          <DirectionsBusIcon color="primary" />
+          <Link
+            component="button"
+            variant="body2"
+            onClick={handleBusClick}
+            sx={{ textDecoration: 'none' }}
+          >
+            Ver Bus {pupitre.busId}
+          </Link>
+        </Box>
+
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Bus ID: {pupitre.busId}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
           Última actualización: {new Date(pupitre.updatedAt).toLocaleString()}
         </Typography>
 
