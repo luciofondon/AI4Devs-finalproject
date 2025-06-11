@@ -20,13 +20,22 @@ export class Bus {
   @Column({ type: 'decimal', precision: 11, scale: 8, nullable: true })
   longitude: number;
 
-  @OneToMany(() => Pupitre, pupitre => pupitre.bus, { eager: true })
+  @OneToMany(() => Pupitre, pupitre => pupitre.bus, { 
+    eager: true,
+    cascade: true 
+  })
   pupitres: Pupitre[];
 
-  @OneToMany(() => Validator, validator => validator.bus, { eager: true })
+  @OneToMany(() => Validator, validator => validator.bus, { 
+    eager: true,
+    cascade: true 
+  })
   validators: Validator[];
 
-  @OneToMany(() => Camera, camera => camera.bus)
+  @OneToMany(() => Camera, camera => camera.bus, {
+    eager: true,
+    cascade: true
+  })
   cameras: Camera[];
 
   @CreateDateColumn()

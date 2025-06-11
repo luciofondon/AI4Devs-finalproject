@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Bus } from './bus.entity';
 
 export enum PupitreStatus {
@@ -38,7 +38,11 @@ export class Pupitre {
   @Column({ name: 'bus_id', length: 4, nullable: false })
   busId: string;
 
-  @ManyToOne(() => Bus, bus => bus.pupitres)
+  @ManyToOne(() => Bus, bus => bus.pupitres, { 
+    eager: false,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'bus_id' })
   bus: Bus;
 
   @CreateDateColumn()

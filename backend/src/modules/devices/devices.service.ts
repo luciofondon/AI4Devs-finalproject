@@ -29,26 +29,51 @@ export class DevicesService {
   // Métodos para Buses
   async findAllBuses(status?: BusStatus): Promise<BusWithStatus[]> {
     this.logger.debug(`findAllBuses called with status: ${status}`);
+    
+    // Primero obtenemos los buses con sus relaciones
     const buses = await this.busRepository
       .createQueryBuilder('bus')
       .leftJoinAndSelect('bus.pupitres', 'pupitres')
       .leftJoinAndSelect('bus.validators', 'validators')
       .leftJoinAndSelect('bus.cameras', 'cameras')
-      .select([
-        'bus.id',
-        'bus.latitude',
-        'bus.longitude',
-        'bus.createdAt',
-        'bus.updatedAt',
-        'pupitres',
-        'validators',
-        'cameras'
-      ])
       .getMany();
+
+    this.logger.debug(`Buses encontrados: ${buses.length}`, {
+      buses: buses.map(bus => ({
+        id: bus.id,
+        pupitres: bus.pupitres?.map(p => ({
+          id: p.id,
+          busId: p.busId,
+          qrStatus: p.qrStatus,
+          rfidStatus: p.rfidStatus,
+          emvStatus: p.emvStatus,
+          printerStatus: p.printerStatus,
+          modemStatus: p.modemStatus,
+          gpsStatus: p.gpsStatus
+        })),
+        validators: bus.validators?.map(v => ({
+          id: v.id,
+          busId: v.busId,
+          rfidStatus: v.rfidStatus,
+          emvStatus: v.emvStatus
+        })),
+        cameras: bus.cameras?.map(c => ({
+          id: c.id,
+          busId: c.busId,
+          status: c.status
+        }))
+      }))
+    });
     
     // Añadir el estado calculado a cada bus
     const busesWithStatus = buses.map(bus => {
       const calculatedStatus = this.calculateBusStatus(bus);
+      this.logger.debug(`Estado calculado para bus ${bus.id}: ${calculatedStatus}`, {
+        busId: bus.id,
+        pupitresCount: bus.pupitres?.length || 0,
+        validatorsCount: bus.validators?.length || 0,
+        camerasCount: bus.cameras?.length || 0
+      });
       return {
         ...bus,
         status: calculatedStatus
@@ -65,12 +90,21 @@ export class DevicesService {
   }
 
   async findBusById(id: string): Promise<BusWithStatus | null> {
-    const bus = await this.busRepository.findOne({ 
-      where: { id },
-      relations: ['pupitres', 'validators', 'cameras']
-    });
+    const bus = await this.busRepository
+      .createQueryBuilder('bus')
+      .leftJoinAndSelect('bus.pupitres', 'pupitres')
+      .leftJoinAndSelect('bus.validators', 'validators')
+      .leftJoinAndSelect('bus.cameras', 'cameras')
+      .where('bus.id = :id', { id })
+      .getOne();
     
     if (bus) {
+      this.logger.debug(`Bus ${id} encontrado con:`, {
+        pupitresCount: bus.pupitres?.length || 0,
+        validatorsCount: bus.validators?.length || 0,
+        camerasCount: bus.cameras?.length || 0
+      });
+
       const calculatedStatus = this.calculateBusStatus(bus);
       return {
         ...bus,
@@ -270,27 +304,71 @@ export class DevicesService {
     const validators = bus.validators || [];
     const cameras = bus.cameras || [];
 
+    this.logger.debug(`Calculando estado para bus ${bus.id}:`, {
+      pupitres: pupitres.map(p => ({ id: p.id, qrStatus: p.qrStatus, rfidStatus: p.rfidStatus, emvStatus: p.emvStatus, printerStatus: p.printerStatus, modemStatus: p.modemStatus, gpsStatus: p.gpsStatus })),
+      validators: validators.map(v => ({ id: v.id, rfidStatus: v.rfidStatus, emvStatus: v.emvStatus })),
+      cameras: cameras.map(c => ({ id: c.id, status: c.status }))
+    });
+
+    // Primero calculamos el estado de cada pupitre
+    const pupitresWithStatus = pupitres.map(pupitre => {
+      const status = this.calculatePupitreStatus(pupitre);
+      this.logger.debug(`Pupitre ${pupitre.id} calculado como ${status}`, {
+        pupitreId: pupitre.id,
+        qrStatus: pupitre.qrStatus,
+        rfidStatus: pupitre.rfidStatus,
+        emvStatus: pupitre.emvStatus,
+        printerStatus: pupitre.printerStatus,
+        modemStatus: pupitre.modemStatus,
+        gpsStatus: pupitre.gpsStatus,
+        calculatedStatus: status
+      });
+      return {
+        ...pupitre,
+        status
+      };
+    });
+
+    // Calculamos el estado de cada validador
+    const validatorsWithStatus = validators.map(validator => {
+      const status = this.calculateValidatorStatus(validator);
+      this.logger.debug(`Validador ${validator.id} calculado como ${status}`, {
+        validatorId: validator.id,
+        rfidStatus: validator.rfidStatus,
+        emvStatus: validator.emvStatus,
+        calculatedStatus: status
+      });
+      return {
+        ...validator,
+        status
+      };
+    });
+
     // Si algún dispositivo está en KO, el bus está en KO
-    if (pupitres.some(p => p.status === PupitreStatus.KO) || 
-        validators.some(v => v.status === ValidatorStatus.KO) ||
+    if (pupitresWithStatus.some(p => p.status === PupitreStatus.KO) || 
+        validatorsWithStatus.some(v => v.status === ValidatorStatus.KO) ||
         cameras.some(c => c.status === CameraStatus.KO)) {
+      this.logger.debug(`Bus ${bus.id} está en KO debido a dispositivos en KO`);
       return BusStatus.KO;
     }
 
     // Si algún dispositivo está en WARNING, el bus está en WARNING
-    if (pupitres.some(p => p.status === PupitreStatus.WARNING) || 
-        validators.some(v => v.status === ValidatorStatus.WARNING)) {
+    if (pupitresWithStatus.some(p => p.status === PupitreStatus.WARNING) || 
+        validatorsWithStatus.some(v => v.status === ValidatorStatus.WARNING)) {
+      this.logger.debug(`Bus ${bus.id} está en WARNING debido a dispositivos en WARNING`);
       return BusStatus.WARNING;
     }
 
     // El bus está en OK solo si TODOS los dispositivos están en OK
-    if (pupitres.every(p => p.status === PupitreStatus.OK) && 
-        validators.every(v => v.status === ValidatorStatus.OK) &&
+    if (pupitresWithStatus.every(p => p.status === PupitreStatus.OK) && 
+        validatorsWithStatus.every(v => v.status === ValidatorStatus.OK) &&
         cameras.every(c => c.status === CameraStatus.OK)) {
+      this.logger.debug(`Bus ${bus.id} está en OK - todos los dispositivos OK`);
       return BusStatus.OK;
     }
 
     // Si no se cumple ninguna de las condiciones anteriores, el bus está en WARNING
+    this.logger.debug(`Bus ${bus.id} está en WARNING por defecto`);
     return BusStatus.WARNING;
   }
 } 
