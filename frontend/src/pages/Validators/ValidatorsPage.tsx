@@ -1,4 +1,4 @@
-import { Container, Grid, Typography, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { Grid, Typography, ToggleButtonGroup, ToggleButton, Box } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { devicesService } from '../../services/devices';
 import { ValidatorStatus } from '../../components/ValidatorStatus/ValidatorStatus';
@@ -30,7 +30,7 @@ const ValidatorsPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Box sx={{ width: '100%' }}>
       <ToggleButtonGroup
         value={statusFilter}
         exclusive
@@ -56,7 +56,7 @@ const ValidatorsPage = () => {
           ))}
         </Grid>
       )}
-    </Container>
+    </Box>
   );
 };
 
