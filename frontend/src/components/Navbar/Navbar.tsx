@@ -23,7 +23,6 @@ import TvIcon from '@mui/icons-material/Tv';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import MapIcon from '@mui/icons-material/Map';
-import { Link } from 'react-router-dom';
 
 const drawerWidth = 260;
 

@@ -49,13 +49,3 @@ Cypress.Commands.add('checkDeviceStatus', (deviceType: string, deviceId: string,
     .find('[data-testid="status-chip"]')
     .should('have.text', expectedStatus);
 });
-
-// Tipos para TypeScript
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      login(email: string, password: string): Chainable<void>;
-      checkDeviceStatus(deviceType: string, deviceId: string, expectedStatus: string): Chainable<void>;
-    }
-  }
-}

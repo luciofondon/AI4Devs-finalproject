@@ -1,4 +1,3 @@
-import api from './api';
 import type { Bus, Pupitre, Validator, Camera } from '../types';
 import { BusStatus, PupitreStatus, ValidatorStatus, CameraStatus } from '../types';
 
