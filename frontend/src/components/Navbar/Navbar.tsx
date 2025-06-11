@@ -22,6 +22,7 @@ import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import TvIcon from '@mui/icons-material/Tv';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import MapIcon from '@mui/icons-material/Map';
 import { Link } from 'react-router-dom';
 
 const drawerWidth = 260;
@@ -48,6 +49,7 @@ const menuItems = [
   { text: 'Pupitres', icon: <TvIcon sx={{ fontSize: 24 }} />, path: '/pupitres' },
   { text: 'Validadoras', icon: <CreditCardIcon sx={{ fontSize: 24 }} />, path: '/validators' },
   { text: 'Cámaras', icon: <VideocamIcon sx={{ fontSize: 24 }} />, path: '/cameras' },
+  { text: 'Mapa', icon: <MapIcon sx={{ fontSize: 24 }} />, path: '/map' },
 ];
 
 export const Navbar = () => {
@@ -137,44 +139,6 @@ export const Navbar = () => {
             </ListItemButton>
           </ListItem>
         ))}
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => handleNavigation('/map')}
-            selected={location.pathname === '/map'}
-            sx={{
-              borderRadius: 1,
-              mb: 0.5,
-              '&.Mui-selected': {
-                bgcolor: 'rgba(0, 188, 212, 0.15)',
-                color: '#00bcd4',
-                '&:hover': {
-                  bgcolor: 'rgba(0, 188, 212, 0.2)',
-                },
-              },
-              '&:hover': {
-                bgcolor: 'rgba(255, 255, 255, 0.08)',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ 
-              color: location.pathname === '/map' ? '#00bcd4' : 'rgba(255, 255, 255, 0.7)',
-              minWidth: 40,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Link to="/map" className="nav-link">Mapa</Link>
-            </ListItemIcon>
-            <ListItemText 
-              primary="Mapa" 
-              primaryTypographyProps={{
-                fontSize: '0.9rem',
-                fontWeight: location.pathname === '/map' ? 600 : 400,
-                letterSpacing: '0.5px'
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
       </List>
       <Box sx={{ 
         p: 2, 
