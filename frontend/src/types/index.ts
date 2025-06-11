@@ -61,13 +61,10 @@ export enum GPSStatus {
 }
 
 export interface Bus {
-  id: number;
-  plate: string;
-  model: string;
-  capacity: number;
+  id: string;
+  status: BusStatus;
   latitude: number;
   longitude: number;
-  status: 'active' | 'maintenance' | 'inactive';
   createdAt: string;
   updatedAt: string;
 }
