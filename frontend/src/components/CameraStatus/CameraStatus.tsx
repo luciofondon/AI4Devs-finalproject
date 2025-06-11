@@ -1,16 +1,20 @@
-import { Card, CardContent, Typography, Chip, Button, Stack } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Stack, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import type { Camera, CameraStatus as CameraStatusType, ConnectionStatus, QualityStatus } from '../../types';
+import type { Camera, CameraStatus as CameraStatusType } from '../../types';
 import { useCameraStatus } from '../../hooks/useCameraStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HelpIcon from '@mui/icons-material/Help';
 
 interface CameraStatusProps {
   camera: Camera;
 }
 
-const getStatusColor = (status: Camera['status']) => {
+const getStatusColor = (status: CameraStatusType) => {
   switch (status) {
     case 'OK':
       return 'success';
@@ -21,27 +25,25 @@ const getStatusColor = (status: Camera['status']) => {
   }
 };
 
-const getConnectionColor = (status: ConnectionStatus) => {
+const getStatusIcon = (status: CameraStatusType) => {
   switch (status) {
-    case 'CONNECTED':
-      return 'success';
-    case 'DISCONNECTED':
-      return 'error';
+    case 'OK':
+      return <CheckCircleIcon />;
+    case 'KO':
+      return <CancelIcon />;
     default:
-      return 'default';
+      return <HelpIcon />;
   }
 };
 
-const getQualityColor = (status: QualityStatus) => {
+const getStatusBackgroundColor = (status: CameraStatusType) => {
   switch (status) {
-    case 'GOOD':
-      return 'success';
-    case 'MEDIUM':
-      return 'warning';
-    case 'POOR':
-      return 'error';
+    case 'OK':
+      return 'rgba(76, 175, 80, 0.1)';
+    case 'KO':
+      return 'rgba(244, 67, 54, 0.1)';
     default:
-      return 'default';
+      return 'transparent';
   }
 };
 
@@ -57,6 +59,11 @@ export const CameraStatus = ({ camera }: CameraStatusProps) => {
     navigate(`/cameras/${camera.id}`);
   };
 
+  const handleBusClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/buses/${camera.busId}`);
+  };
+
   return (
     <Card 
       sx={{ 
@@ -65,63 +72,52 @@ export const CameraStatus = ({ camera }: CameraStatusProps) => {
         '&:hover': {
           boxShadow: 6,
         },
+        backgroundColor: getStatusBackgroundColor(camera.status),
       }}
       onClick={handleClick}
     >
       <LoadingOverlay open={isUpdating} />
-      <CardContent>
-        <Typography variant="h6" component="div">
-          Cámara {camera.id}
-        </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mb: 2 }}>
           <Chip
             label={camera.status}
             color={getStatusColor(camera.status)}
             size="small"
+            icon={getStatusIcon(camera.status)}
+            sx={{ 
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+            }}
           />
-          <Chip
-            label={camera.connection}
-            color={getConnectionColor(camera.connection)}
-            size="small"
-          />
-          <Chip
-            label={camera.quality}
-            color={getQualityColor(camera.quality)}
-            size="small"
-          />
-        </Stack>
+        </Box>
+
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1,
+            mt: 'auto',
+            pt: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider'
+          }}
+        >
+          <DirectionsBusIcon color="primary" />
+          <Link
+            component="button"
+            variant="body2"
+            onClick={handleBusClick}
+            sx={{ textDecoration: 'none' }}
+          >
+            Ver Bus {camera.busId}
+          </Link>
+        </Box>
+
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Bus ID: {camera.busId}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
           Última actualización: {new Date(camera.updatedAt).toLocaleString()}
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-          <Button
-            size="small"
-            variant="outlined"
-            color="success"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('OK' as CameraStatusType);
-            }}
-            disabled={isUpdating || camera.status === 'OK'}
-          >
-            OK
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="error"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange('KO' as CameraStatusType);
-            }}
-            disabled={isUpdating || camera.status === 'KO'}
-          >
-            KO
-          </Button>
-        </Stack>
+
         {error && (
           <ErrorMessage
             title="Error al actualizar el estado"

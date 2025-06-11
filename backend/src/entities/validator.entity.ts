@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Bus } from './bus.entity';
 
 export enum ValidatorStatus {
@@ -7,22 +7,27 @@ export enum ValidatorStatus {
   KO = 'KO',
 }
 
+export enum ReaderStatus {
+  OK = 'OK',
+  KO = 'KO',
+}
+
 @Entity('validators')
 export class Validator {
   @PrimaryColumn({ length: 8 })
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: ValidatorStatus,
-    default: ValidatorStatus.OK,
-  })
-  status: ValidatorStatus;
+  // Campo calculado, no se almacena en la BD
+  status?: ValidatorStatus;
 
-  @Column({ name: 'bus_id', length: 4 })
+  @Column({ name: 'bus_id', length: 4, nullable: false })
   busId: string;
 
-  @ManyToOne(() => Bus, bus => bus.validators)
+  @ManyToOne(() => Bus, bus => bus.validators, { 
+    eager: false,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'bus_id' })
   bus: Bus;
 
   @CreateDateColumn()
@@ -30,4 +35,20 @@ export class Validator {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({
+    type: 'enum',
+    enum: ReaderStatus,
+    default: ReaderStatus.OK,
+    name: 'rfid_status',
+  })
+  rfidStatus: ReaderStatus;
+
+  @Column({
+    type: 'enum',
+    enum: ReaderStatus,
+    default: ReaderStatus.OK,
+    name: 'emv_status',
+  })
+  emvStatus: ReaderStatus;
 } 

@@ -55,9 +55,7 @@ export const BusDevices = ({ busId, pupitres, validators, cameras, isDetailView 
         {busPupitres.length > 0 && (
           <Paper sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <Typography variant="subtitle1" color="primary">
-                Pupitres
-              </Typography>
+
               {!isDetailView && (
                 <Button 
                   variant="text" 
@@ -142,7 +140,7 @@ export const BusDevices = ({ busId, pupitres, validators, cameras, isDetailView 
           </Paper>
         )}
 
-        {busPupitres.length === 0 && busValidators.length === 0 && busCameras.length === 0 && (
+        {isDetailView && busPupitres.length === 0 && busValidators.length === 0 && busCameras.length === 0 && (
           <Paper sx={{ p: 2 }}>
             <Typography variant="body1" color="text.secondary" align="center">
               No hay dispositivos asociados a este bus

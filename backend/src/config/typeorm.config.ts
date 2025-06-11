@@ -13,6 +13,6 @@ export default registerAs('typeorm', (): TypeOrmModuleOptions => ({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [Bus, Pupitre, Validator, Camera],
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: false,
   logging: process.env.NODE_ENV !== 'production',
 })); 

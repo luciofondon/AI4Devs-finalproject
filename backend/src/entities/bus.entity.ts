@@ -14,20 +14,28 @@ export class Bus {
   @PrimaryColumn({ length: 4 })
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: BusStatus,
-    default: BusStatus.OK,
-  })
-  status: BusStatus;
+  @Column({ type: 'decimal', precision: 10, scale: 8, nullable: true })
+  latitude: number;
 
-  @OneToMany(() => Pupitre, pupitre => pupitre.bus)
+  @Column({ type: 'decimal', precision: 11, scale: 8, nullable: true })
+  longitude: number;
+
+  @OneToMany(() => Pupitre, pupitre => pupitre.bus, { 
+    eager: true,
+    cascade: true 
+  })
   pupitres: Pupitre[];
 
-  @OneToMany(() => Validator, validator => validator.bus)
+  @OneToMany(() => Validator, validator => validator.bus, { 
+    eager: true,
+    cascade: true 
+  })
   validators: Validator[];
 
-  @OneToMany(() => Camera, camera => camera.bus)
+  @OneToMany(() => Camera, camera => camera.bus, {
+    eager: true,
+    cascade: true
+  })
   cameras: Camera[];
 
   @CreateDateColumn()

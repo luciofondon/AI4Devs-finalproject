@@ -1,21 +1,25 @@
-import { Controller, Get, Param, Put, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Param, Put, Body, NotFoundException, Query } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { Bus, BusStatus } from '../../entities/bus.entity';
 import { Pupitre, PupitreStatus } from '../../entities/pupitre.entity';
 import { Validator, ValidatorStatus } from '../../entities/validator.entity';
 import { Camera, CameraStatus } from '../../entities/camera.entity';
 
+interface BusWithStatus extends Bus {
+  status: BusStatus;
+}
+
 @Controller()
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
   @Get('buses')
-  async findAllBuses(): Promise<Bus[]> {
-    return this.devicesService.findAllBuses();
+  async getBuses(@Query('status') status?: BusStatus): Promise<BusWithStatus[]> {
+    return this.devicesService.findAllBuses(status);
   }
 
   @Get('buses/:id')
-  async findBusById(@Param('id') id: string): Promise<Bus> {
+  async getBusById(@Param('id') id: string): Promise<BusWithStatus> {
     const bus = await this.devicesService.findBusById(id);
     if (!bus) {
       throw new NotFoundException(`Bus with ID ${id} not found`);
@@ -23,21 +27,14 @@ export class DevicesController {
     return bus;
   }
 
-  @Put('buses/:id/status')
-  async updateBusStatus(
-    @Param('id') id: string,
-    @Body('status') status: BusStatus,
-  ): Promise<Bus> {
-    const bus = await this.devicesService.findBusById(id);
-    if (!bus) {
-      throw new NotFoundException(`Bus with ID ${id} not found`);
-    }
-    return this.devicesService.updateBusStatus(id, status);
-  }
-
   @Get('pupitres')
-  async findAllPupitres(): Promise<Pupitre[]> {
-    return this.devicesService.findAllPupitres();
+  async findAllPupitres(@Query('status') status?: string): Promise<Pupitre[]> {
+    console.log('Valor recibido en status (pupitres):', status);
+    const statusEnum = status?.toUpperCase() as PupitreStatus;
+    if (!Object.values(PupitreStatus).includes(statusEnum)) {
+      return this.devicesService.findAllPupitres();
+    }
+    return this.devicesService.findAllPupitres(statusEnum);
   }
 
   @Get('pupitres/:id')
@@ -62,8 +59,13 @@ export class DevicesController {
   }
 
   @Get('validators')
-  async findAllValidators(): Promise<Validator[]> {
-    return this.devicesService.findAllValidators();
+  async findAllValidators(@Query('status') status?: string): Promise<Validator[]> {
+    console.log('Valor recibido en status (validators):', status);
+    const statusEnum = status?.toUpperCase() as ValidatorStatus;
+    if (!Object.values(ValidatorStatus).includes(statusEnum)) {
+      return this.devicesService.findAllValidators();
+    }
+    return this.devicesService.findAllValidators(statusEnum);
   }
 
   @Get('validators/:id')
@@ -88,8 +90,13 @@ export class DevicesController {
   }
 
   @Get('cameras')
-  async findAllCameras(): Promise<Camera[]> {
-    return this.devicesService.findAllCameras();
+  async findAllCameras(@Query('status') status?: string): Promise<Camera[]> {
+    console.log('Valor recibido en status (cameras):', status);
+    const statusEnum = status?.toUpperCase() as CameraStatus;
+    if (!Object.values(CameraStatus).includes(statusEnum)) {
+      return this.devicesService.findAllCameras();
+    }
+    return this.devicesService.findAllCameras(statusEnum);
   }
 
   @Get('cameras/:id')
