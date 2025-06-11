@@ -30,31 +30,45 @@ const ValidatorsPage = () => {
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <ToggleButtonGroup
-        value={statusFilter}
-        exclusive
-        onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
-        sx={{ mb: 2 }}
-      >
-        <ToggleButton value="ALL">Todos</ToggleButton>
-        <ToggleButton value="OK">OK</ToggleButton>
-        <ToggleButton value="WARNING">WARNING</ToggleButton>
-        <ToggleButton value="KO">KO</ToggleButton>
-      </ToggleButtonGroup>
-      {(!validators || validators.length === 0) ? (
-        <EmptyState
-          title="No hay validadoras"
-          message="No se encontraron validadoras en el sistema"
-        />
-      ) : (
+    <Box sx={{ p: 3 }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Validadoras
+        </Typography>
+        <ToggleButtonGroup
+          value={statusFilter}
+          exclusive
+          onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
+          aria-label="filtro de estado"
+        >
+          <ToggleButton value="ALL" aria-label="todos">
+            Todos
+          </ToggleButton>
+          <ToggleButton value="OK" aria-label="ok">
+            OK
+          </ToggleButton>
+          <ToggleButton value="WARNING" aria-label="warning">
+            Warning
+          </ToggleButton>
+          <ToggleButton value="KO" aria-label="ko">
+            KO
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      {validators && validators.length > 0 ? (
         <Grid container spacing={3}>
           {validators.map((validator) => (
-            <Grid item xs={12} sm={6} md={4} key={validator.id}>
+            <Grid item xs={12} sm={6} md={3} key={validator.id}>
               <ValidatorStatus validator={validator} />
             </Grid>
           ))}
         </Grid>
+      ) : (
+        <EmptyState
+          title="No hay validadoras"
+          message="No se encontraron validadoras con los filtros seleccionados"
+        />
       )}
     </Box>
   );

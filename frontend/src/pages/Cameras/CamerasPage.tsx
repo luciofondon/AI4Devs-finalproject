@@ -30,30 +30,43 @@ export const CamerasPage = () => {
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <ToggleButtonGroup
-        value={statusFilter}
-        exclusive
-        onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
-        sx={{ mb: 2 }}
-      >
-        <ToggleButton value="ALL">Todos</ToggleButton>
-        <ToggleButton value="OK">OK</ToggleButton>
-        <ToggleButton value="KO">KO</ToggleButton>
-      </ToggleButtonGroup>
-      {(!cameras || cameras.length === 0) ? (
-        <EmptyState
-          title="No hay cámaras"
-          message="No se encontraron cámaras en el sistema"
-        />
-      ) : (
+    <Box sx={{ p: 3 }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Cámaras
+        </Typography>
+        <ToggleButtonGroup
+          value={statusFilter}
+          exclusive
+          onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
+          aria-label="filtro de estado"
+          size="small"
+        >
+          <ToggleButton value="ALL" aria-label="todos">
+            Todos
+          </ToggleButton>
+          <ToggleButton value="OK" aria-label="ok">
+            OK
+          </ToggleButton>
+          <ToggleButton value="KO" aria-label="ko">
+            KO
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      {cameras && cameras.length > 0 ? (
         <Grid container spacing={3}>
           {cameras.map((camera) => (
-            <Grid item xs={12} sm={6} md={4} key={camera.id}>
+            <Grid item xs={12} sm={6} md={3} key={camera.id}>
               <CameraStatus camera={camera} />
             </Grid>
           ))}
         </Grid>
+      ) : (
+        <EmptyState
+          title="No hay cámaras"
+          message="No se encontraron cámaras con los filtros seleccionados"
+        />
       )}
     </Box>
   );
