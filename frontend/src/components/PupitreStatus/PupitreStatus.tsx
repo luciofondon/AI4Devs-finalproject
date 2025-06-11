@@ -1,6 +1,6 @@
-import { Card, CardContent, Typography, Chip, Button, Stack, Divider, Box, Link } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Stack, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import type { Pupitre, PupitreStatus as PupitreStatusType, ReaderStatus, PrinterStatus, ModemStatus, GPSStatus } from '../../types';
+import type { Pupitre, ReaderStatus, PrinterStatus, ModemStatus, GPSStatus } from '../../types';
 import { usePupitreStatus } from '../../hooks/usePupitreStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -15,8 +15,6 @@ import QrCodeIcon from '@mui/icons-material/QrCode';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ContactlessIcon from '@mui/icons-material/Contactless';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
-import CancelIcon from '@mui/icons-material/Cancel';
-import HelpIcon from '@mui/icons-material/Help';
 
 interface PupitreStatusProps {
   pupitre: Pupitre;
@@ -120,18 +118,6 @@ const getStatusIcon = (status: Pupitre['status']) => {
   }
 };
 
-const getReaderStatusIcon = (status: ReaderStatus) => {
-  switch (status) {
-    case 'OK':
-      return <CheckCircleIcon color="success" />;
-    case 'WARNING':
-      return <WarningIcon color="warning" />;
-    case 'KO':
-      return <ErrorIcon color="error" />;
-    default:
-      return <ErrorIcon color="error" />;
-  }
-};
 
 const getPrinterStatusIcon = (status: PrinterStatus) => {
   switch (status) {
@@ -181,11 +167,8 @@ const getGPSStatusIcon = (status: GPSStatus) => {
 
 export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
   const navigate = useNavigate();
-  const { updateStatus, isUpdating, error, isSuccess } = usePupitreStatus();
+  const { isUpdating, error, isSuccess } = usePupitreStatus();
 
-  const handleStatusChange = (newStatus: PupitreStatusType) => {
-    updateStatus({ pupitreId: pupitre.id, status: newStatus });
-  };
 
   const handleClick = () => {
     navigate(`/pupitres/${pupitre.id}`);

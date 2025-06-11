@@ -1,6 +1,6 @@
-import { Card, CardContent, Typography, Chip, Button, Stack, Box, Link } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Stack, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import type { Validator, ValidatorStatus as ValidatorStatusType, ReaderStatus } from '../../types';
+import type { Validator, ReaderStatus } from '../../types';
 import { useValidatorStatus } from '../../hooks/useValidatorStatus';
 import { LoadingOverlay } from '../LoadingOverlay/LoadingOverlay';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -11,8 +11,6 @@ import ErrorIcon from '@mui/icons-material/Error';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ContactlessIcon from '@mui/icons-material/Contactless';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
-import CancelIcon from '@mui/icons-material/Cancel';
-import HelpIcon from '@mui/icons-material/Help';
 
 interface ValidatorStatusProps {
   validator: Validator;
@@ -70,26 +68,10 @@ const getStatusIcon = (status: Validator['status']) => {
   }
 };
 
-const getReaderStatusIcon = (status: ReaderStatus) => {
-  switch (status) {
-    case 'OK':
-      return <CheckCircleIcon color="success" />;
-    case 'WARNING':
-      return <WarningIcon color="warning" />;
-    case 'KO':
-      return <ErrorIcon color="error" />;
-    default:
-      return <ErrorIcon color="error" />;
-  }
-};
 
 export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
   const navigate = useNavigate();
-  const { updateStatus, isUpdating, error, isSuccess } = useValidatorStatus();
-
-  const handleStatusChange = (newStatus: ValidatorStatusType) => {
-    updateStatus({ validatorId: validator.id, status: newStatus });
-  };
+  const { isUpdating, error, isSuccess } = useValidatorStatus();
 
   const handleClick = () => {
     navigate(`/validators/${validator.id}`);

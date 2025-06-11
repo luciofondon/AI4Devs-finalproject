@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Chip, Stack, Box, Link } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Camera, CameraStatus as CameraStatusType } from '../../types';
 import { useCameraStatus } from '../../hooks/useCameraStatus';
@@ -49,11 +49,8 @@ const getStatusBackgroundColor = (status: CameraStatusType) => {
 
 export const CameraStatus = ({ camera }: CameraStatusProps) => {
   const navigate = useNavigate();
-  const { updateStatus, isUpdating, error, isSuccess } = useCameraStatus();
+  const { isUpdating, error, isSuccess } = useCameraStatus();
 
-  const handleStatusChange = (newStatus: CameraStatusType) => {
-    updateStatus({ cameraId: camera.id, status: newStatus });
-  };
 
   const handleClick = () => {
     navigate(`/cameras/${camera.id}`);
