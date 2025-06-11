@@ -14,9 +14,6 @@ export class Bus {
   @PrimaryColumn({ length: 4 })
   id: string;
 
-  @Column({ type: 'enum', enum: BusStatus, nullable: true })
-  status?: BusStatus;
-
   @Column({ type: 'decimal', precision: 10, scale: 8, nullable: true })
   latitude: number;
 

@@ -5,22 +5,21 @@ import { Pupitre, PupitreStatus } from '../../entities/pupitre.entity';
 import { Validator, ValidatorStatus } from '../../entities/validator.entity';
 import { Camera, CameraStatus } from '../../entities/camera.entity';
 
+interface BusWithStatus extends Bus {
+  status: BusStatus;
+}
+
 @Controller()
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
   @Get('buses')
-  async findAllBuses(@Query('status') status?: string): Promise<Bus[]> {
-    console.log('Valor recibido en status (buses):', status);
-    const statusEnum = status?.toUpperCase() as BusStatus;
-    if (!Object.values(BusStatus).includes(statusEnum)) {
-      return this.devicesService.findAllBuses();
-    }
-    return this.devicesService.findAllBuses(statusEnum);
+  async getBuses(@Query('status') status?: BusStatus): Promise<BusWithStatus[]> {
+    return this.devicesService.findAllBuses(status);
   }
 
   @Get('buses/:id')
-  async findBusById(@Param('id') id: string): Promise<Bus> {
+  async getBusById(@Param('id') id: string): Promise<BusWithStatus> {
     const bus = await this.devicesService.findBusById(id);
     if (!bus) {
       throw new NotFoundException(`Bus with ID ${id} not found`);

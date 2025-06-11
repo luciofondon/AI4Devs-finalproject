@@ -7,6 +7,10 @@ import { Validator, ValidatorStatus } from '../../entities/validator.entity';
 import { Camera, CameraStatus } from '../../entities/camera.entity';
 import { ModemStatus, GPSStatus, ReaderStatus, PrinterStatus } from '../../entities/pupitre.entity';
 
+interface BusWithStatus extends Bus {
+  status: BusStatus;
+}
+
 @Injectable()
 export class DevicesService {
   private readonly logger = new Logger(DevicesService.name);
@@ -23,29 +27,33 @@ export class DevicesService {
   ) {}
 
   // Métodos para Buses
-  async findAllBuses(status?: BusStatus): Promise<Bus[]> {
+  async findAllBuses(status?: BusStatus): Promise<BusWithStatus[]> {
     this.logger.debug(`findAllBuses called with status: ${status}`);
     const buses = await this.busRepository
       .createQueryBuilder('bus')
       .leftJoinAndSelect('bus.pupitres', 'pupitres')
       .leftJoinAndSelect('bus.validators', 'validators')
+      .leftJoinAndSelect('bus.cameras', 'cameras')
       .select([
         'bus.id',
-        'bus.status',
         'bus.latitude',
         'bus.longitude',
         'bus.createdAt',
         'bus.updatedAt',
         'pupitres',
-        'validators'
+        'validators',
+        'cameras'
       ])
       .getMany();
     
     // Añadir el estado calculado a cada bus
-    const busesWithStatus = buses.map(bus => ({
-      ...bus,
-      status: this.calculateBusStatus(bus)
-    }));
+    const busesWithStatus = buses.map(bus => {
+      const calculatedStatus = this.calculateBusStatus(bus);
+      return {
+        ...bus,
+        status: calculatedStatus
+      };
+    });
 
     if (status) {
       const filteredBuses = busesWithStatus.filter(bus => bus.status === status);
@@ -56,16 +64,17 @@ export class DevicesService {
     return busesWithStatus;
   }
 
-  async findBusById(id: string): Promise<Bus | null> {
+  async findBusById(id: string): Promise<BusWithStatus | null> {
     const bus = await this.busRepository.findOne({ 
       where: { id },
-      relations: ['pupitres', 'validators']
+      relations: ['pupitres', 'validators', 'cameras']
     });
     
     if (bus) {
+      const calculatedStatus = this.calculateBusStatus(bus);
       return {
         ...bus,
-        status: this.calculateBusStatus(bus)
+        status: calculatedStatus
       };
     }
     return null;
@@ -259,13 +268,29 @@ export class DevicesService {
   private calculateBusStatus(bus: Bus): BusStatus {
     const pupitres = bus.pupitres || [];
     const validators = bus.validators || [];
+    const cameras = bus.cameras || [];
 
-    if (pupitres.some(p => p.status === PupitreStatus.KO) || validators.some(v => v.status === ValidatorStatus.KO)) {
+    // Si algún dispositivo está en KO, el bus está en KO
+    if (pupitres.some(p => p.status === PupitreStatus.KO) || 
+        validators.some(v => v.status === ValidatorStatus.KO) ||
+        cameras.some(c => c.status === CameraStatus.KO)) {
       return BusStatus.KO;
     }
-    if (pupitres.some(p => p.status === PupitreStatus.WARNING) || validators.some(v => v.status === ValidatorStatus.WARNING)) {
+
+    // Si algún dispositivo está en WARNING, el bus está en WARNING
+    if (pupitres.some(p => p.status === PupitreStatus.WARNING) || 
+        validators.some(v => v.status === ValidatorStatus.WARNING)) {
       return BusStatus.WARNING;
     }
-    return BusStatus.OK;
+
+    // El bus está en OK solo si TODOS los dispositivos están en OK
+    if (pupitres.every(p => p.status === PupitreStatus.OK) && 
+        validators.every(v => v.status === ValidatorStatus.OK) &&
+        cameras.every(c => c.status === CameraStatus.OK)) {
+      return BusStatus.OK;
+    }
+
+    // Si no se cumple ninguna de las condiciones anteriores, el bus está en WARNING
+    return BusStatus.WARNING;
   }
 } 
