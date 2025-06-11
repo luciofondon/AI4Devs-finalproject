@@ -13,17 +13,23 @@ export const Layout = ({ children }: LayoutProps) => {
         flexDirection: 'column',
         height: '100vh',
         width: '100%',
-        overflow: 'hidden',
-        '& > main': {
-          flex: 1,
-          width: '100%',
-          height: 'calc(100vh - 64px)', // Altura total menos la altura del navbar
-          overflow: 'hidden'
-        }
+        overflow: 'hidden'
       }}
     >
       <Navbar />
-      <Box component="main">
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          width: { xs: '100%', sm: `calc(100% - 260px)` }, // Ancho total menos el ancho del drawer
+          height: 'calc(100vh - 64px)', // Altura total menos la altura del navbar
+          overflow: 'auto',
+          ml: { sm: '260px' }, // Margen izquierdo igual al ancho del drawer
+          mt: '64px', // Margen superior igual a la altura del navbar
+          p: 3,
+          boxSizing: 'border-box'
+        }}
+      >
         {children}
       </Box>
     </Box>
