@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Chip, Button, Stack, Box } from '@mui/material';
+import { Card, CardContent, Typography, Chip, Button, Stack, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Validator, ValidatorStatus as ValidatorStatusType, ReaderStatus } from '../../types';
 import { useValidatorStatus } from '../../hooks/useValidatorStatus';
@@ -10,6 +10,9 @@ import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ContactlessIcon from '@mui/icons-material/Contactless';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HelpIcon from '@mui/icons-material/Help';
 
 interface ValidatorStatusProps {
   validator: Validator;
@@ -92,6 +95,11 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
     navigate(`/validators/${validator.id}`);
   };
 
+  const handleBusClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/buses/${validator.busId}`);
+  };
+
   return (
     <Card 
       sx={{ 
@@ -120,6 +128,28 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
           />
         </Box>
 
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1,
+            mt: 'auto',
+            pt: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider'
+          }}
+        >
+          <DirectionsBusIcon color="primary" />
+          <Link
+            component="button"
+            variant="body2"
+            onClick={handleBusClick}
+            sx={{ textDecoration: 'none' }}
+          >
+            Ver Bus {validator.busId}
+          </Link>
+        </Box>
+
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           Estado de los Lectores:
         </Typography>
@@ -138,9 +168,6 @@ export const ValidatorStatus = ({ validator }: ValidatorStatusProps) => {
           />
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Bus ID: {validator.busId}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
           Última actualización: {new Date(validator.updatedAt).toLocaleString()}
         </Typography>
         {error && (
