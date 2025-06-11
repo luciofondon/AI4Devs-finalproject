@@ -61,8 +61,13 @@ export enum GPSStatus {
 }
 
 export interface Bus {
-  id: string;
-  status: BusStatus;
+  id: number;
+  plate: string;
+  model: string;
+  capacity: number;
+  latitude: number;
+  longitude: number;
+  status: 'active' | 'maintenance' | 'inactive';
   createdAt: string;
   updatedAt: string;
 }
@@ -97,6 +102,40 @@ export interface Camera {
   connection: ConnectionStatus;
   quality: QualityStatus;
   busId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: 'admin' | 'driver' | 'user';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Route {
+  id: number;
+  name: string;
+  description: string;
+  startLocation: string;
+  endLocation: string;
+  distance: number;
+  estimatedTime: number;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Schedule {
+  id: number;
+  routeId: number;
+  busId: number;
+  driverId: number;
+  departureTime: string;
+  arrivalTime: string;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   createdAt: string;
   updatedAt: string;
 } 

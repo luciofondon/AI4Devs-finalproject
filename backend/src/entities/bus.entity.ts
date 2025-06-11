@@ -17,10 +17,16 @@ export class Bus {
   @Column({ type: 'enum', enum: BusStatus, nullable: true })
   status?: BusStatus;
 
-  @OneToMany(() => Pupitre, pupitre => pupitre.bus)
+  @Column({ type: 'decimal', precision: 10, scale: 8, nullable: true })
+  latitude: number;
+
+  @Column({ type: 'decimal', precision: 11, scale: 8, nullable: true })
+  longitude: number;
+
+  @OneToMany(() => Pupitre, pupitre => pupitre.bus, { eager: true })
   pupitres: Pupitre[];
 
-  @OneToMany(() => Validator, validator => validator.bus)
+  @OneToMany(() => Validator, validator => validator.bus, { eager: true })
   validators: Validator[];
 
   @OneToMany(() => Camera, camera => camera.bus)

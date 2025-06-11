@@ -25,9 +25,21 @@ export class DevicesService {
   // Métodos para Buses
   async findAllBuses(status?: BusStatus): Promise<Bus[]> {
     this.logger.debug(`findAllBuses called with status: ${status}`);
-    const buses = await this.busRepository.find({
-      relations: ['pupitres', 'validators']
-    });
+    const buses = await this.busRepository
+      .createQueryBuilder('bus')
+      .leftJoinAndSelect('bus.pupitres', 'pupitres')
+      .leftJoinAndSelect('bus.validators', 'validators')
+      .select([
+        'bus.id',
+        'bus.status',
+        'bus.latitude',
+        'bus.longitude',
+        'bus.createdAt',
+        'bus.updatedAt',
+        'pupitres',
+        'validators'
+      ])
+      .getMany();
     
     // Añadir el estado calculado a cada bus
     const busesWithStatus = buses.map(bus => ({

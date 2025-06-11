@@ -10,6 +10,7 @@ import ValidatorsPage from './pages/Validators/ValidatorsPage';
 import { ValidatorDetailPage } from './pages/Validators/ValidatorDetailPage';
 import { CamerasPage } from './pages/Cameras/CamerasPage';
 import { CameraDetailPage } from './pages/Cameras/CameraDetailPage';
+import MapPage from './pages/MapPage';
 import './App.css'
 
 const theme = createTheme({
@@ -59,6 +60,7 @@ function App() {
               <Route path="/validators/:id" element={<ValidatorDetailPage />} />
               <Route path="/cameras" element={<CamerasPage />} />
               <Route path="/cameras/:id" element={<CameraDetailPage />} />
+              <Route path="/map" element={<MapPage />} />
             </Routes>
           </Layout>
         </BrowserRouter>
