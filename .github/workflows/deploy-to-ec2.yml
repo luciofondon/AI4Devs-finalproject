@@ -29,6 +29,10 @@ jobs:
       working-directory: ./backend
       run: npm run build
 
+    - name: Prune dev dependencies in backend
+      working-directory: ./backend
+      run: npm prune --production
+
     # Frontend setup and build
     - name: Install frontend dependencies
       working-directory: ./frontend
@@ -61,8 +65,18 @@ jobs:
         # Transferir archivos del frontend
         scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/dist/* $USER@$HOST:neobus-app/frontend/
         
-        # Transferir archivos del backend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:neobus-app/backend/
+        # Transferir backend: dist, package.json, package-lock.json y node_modules
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package.json $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/node_modules $USER@$HOST:neobus-app/backend/
+
+        # Arrancar backend con PM2 (reiniciando si ya está corriendo)
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
+          pm2 delete neobus-backend || true
+          pm2 start neobus-app/backend/dist/main.js --name neobus-backend
+          pm2 save
+        "
             
         # Limpiar archivo de clave
         rm -f private_key.pem
