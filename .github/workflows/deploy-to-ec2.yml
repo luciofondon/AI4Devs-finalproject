@@ -18,11 +18,23 @@ jobs:
       with:
         node-version: '20.x'
 
-    - name: Install dependencies
+    # Backend setup and build
+    - name: Install backend dependencies
+      working-directory: ./backend
       run: npm install
 
-    - name: Run tests
-      run: npm test -- --passWithNoTests
+    - name: Build backend
+      working-directory: ./backend
+      run: npm run build
+
+    # Frontend setup and build
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm install
+
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -41,14 +53,23 @@ jobs:
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
         
-        # Crear directorio de despliegue si no existe
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p nebous-reactapp'
+        # Crear directorios de despliegue si no existen
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/frontend /var/www/neobus-app/backend'
+        
+        # Transferir archivos del frontend
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/build/* $USER@$HOST:/var/www/neobus-app/frontend/
         
         # Transferir archivos del backend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/* $USER@$HOST:backend
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:/var/www/neobus-app/backend/
         
-        # Transferir archivos de la base de datos
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r database/* $USER@$HOST:database
+        # Transferir package.json y package-lock.json del backend
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package*.json $USER@$HOST:/var/www/neobus-app/backend/
+        
+        # Instalar dependencias del backend en el servidor
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'cd /var/www/neobus-app/backend && npm install --production'
+        
+        # Reiniciar el servicio de backend
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'sudo systemctl restart neobus-backend'
         
         # Limpiar archivo de clave
         rm -f private_key.pem
