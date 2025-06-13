@@ -56,20 +56,19 @@ jobs:
         chmod 600 private_key.pem
         
         # Crear directorios de despliegue si no existen
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/frontend'
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/backend'
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /neobus-app/frontend /neobus-app/backend'
 
         # Transferir archivos del frontend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/build/* $USER@$HOST:/var/www/neobus-app/frontend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/build/* $USER@$HOST:eobus-app/frontend/
         
         # Transferir archivos del backend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:/var/www/neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:neobus-app/backend/
         
         # Transferir package.json y package-lock.json del backend
-        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package*.json $USER@$HOST:/var/www/neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package*.json $USER@$HOST:neobus-app/backend/
         
         # Instalar dependencias del backend en el servidor
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'cd /var/www/neobus-app/backend && npm install --production'
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'cd neobus-app/backend && npm install --production'
         
         # Reiniciar el servicio de backend
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'sudo systemctl restart neobus-backend'
