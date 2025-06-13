@@ -24,9 +24,6 @@ jobs:
     - name: Run tests
       run: npm test -- --passWithNoTests
       
-    - name: Build application
-      run: npm run build
-      
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -45,10 +42,7 @@ jobs:
         chmod 600 private_key.pem
         
         # Crear directorio de despliegue si no existe
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p react-app'
-        
-        # Transferir archivos construidos del frontend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r build/* $USER@$HOST:react-app
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p nebous-reactapp'
         
         # Transferir archivos del backend
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/* $USER@$HOST:backend
