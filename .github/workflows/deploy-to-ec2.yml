@@ -1,6 +1,8 @@
 name: Deploy Neobus App to EC2
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [ main ]
     types: [opened, synchronize]
