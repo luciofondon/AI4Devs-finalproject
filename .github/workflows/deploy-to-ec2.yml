@@ -74,7 +74,7 @@ jobs:
           npm install --omit=dev
 
           echo '🐘 Levantando base de datos con docker-compose...'
-          docker-compose up -d db
+          docker compose up -d
 
           echo '🚀 Arrancando backend con PM2...'
           pm2 delete neobus-backend || true
