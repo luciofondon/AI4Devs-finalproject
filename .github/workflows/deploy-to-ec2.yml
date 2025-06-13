@@ -64,6 +64,7 @@ jobs:
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/.env $USER@$HOST:neobus-app/backend/.env
 
         # Ejecutar setup en EC2
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
