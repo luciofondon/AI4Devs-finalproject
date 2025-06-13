@@ -3,10 +3,10 @@
 describe('Buses Page', () => {
   beforeEach(() => {
     // Interceptar las llamadas a la API
-    cy.intercept('GET', '/api/buses', { fixture: 'buses.json' }).as('getBuses');
-    cy.intercept('GET', '/api/pupitres', { fixture: 'pupitres.json' }).as('getPupitres');
-    cy.intercept('GET', '/api/validators', { fixture: 'validators.json' }).as('getValidators');
-    cy.intercept('GET', '/api/cameras', { fixture: 'cameras.json' }).as('getCameras');
+    cy.intercept('GET', '/api/v1/buses', { fixture: 'buses.json' }).as('getBuses');
+    cy.intercept('GET', '/api/v1/pupitres', { fixture: 'pupitres.json' }).as('getPupitres');
+    cy.intercept('GET', '/api/v1/validators', { fixture: 'validators.json' }).as('getValidators');
+    cy.intercept('GET', '/api/v1/cameras', { fixture: 'cameras.json' }).as('getCameras');
   });
 
   it('should display buses list and navigate to bus detail', () => {
@@ -52,7 +52,7 @@ describe('Buses Page', () => {
 
   it('should show bus devices correctly', () => {
     // Interceptar la llamada a la API del bus específico
-    cy.intercept('GET', '/api/buses/*', { fixture: 'bus-detail.json' }).as('getBusDetail');
+    cy.intercept('GET', '/api/v1/buses/*', { fixture: 'bus-detail.json' }).as('getBusDetail');
 
     cy.visit('/buses/1');
     
