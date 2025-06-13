@@ -2,6 +2,30 @@
 
 set -e
 
+echo "Actualizando paquetes..."
+sudo yum update -y
+
+echo "🚀 Instalando Docker..."
+sudo yum install -y docker
+
+echo "Iniciando y habilitando Docker..."
+sudo systemctl start docker
+sudo systemctl enable docker
+
+echo "Añadiendo usuario ec2-user al grupo docker..."
+sudo usermod -aG docker ec2-user
+
+echo "Instalando Node.js 20.x (usando Nodesource)..."
+curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+sudo yum install -y nodejs
+
+echo "Instalando PM2 globalmente..."
+sudo npm install -g pm2
+
+echo "Instalando Docker Compose..."
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
 echo "🚀 Instalando Nginx..."
 sudo dnf install -y nginx
 
@@ -76,4 +100,11 @@ sudo chmod -R o+r $FRONTEND_PATH
 echo "🔄 Reiniciando Nginx..."
 sudo nginx -t && sudo systemctl restart nginx
 
-echo "✅ ¡Despliegue del frontend completado! Accede a: http://<TU_IP_PUBLICA>"
+echo "Verificando versiones instaladas..."
+docker --version
+docker-compose --version
+node --version
+npm --version
+pm2 --version
+
+echo "✅ ¡Configuración completada! Cierra sesión y vuelve a entrar para aplicar permisos de Docker."

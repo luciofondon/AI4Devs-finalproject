@@ -55,29 +55,28 @@ jobs:
         HOST: ${{ secrets.EC2_INSTANCE }}
         USER: ${{ secrets.EC2_USER }}
       run: |
-        # Crear archivo de clave privada
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
         
-        # Crear directorios de despliegue si no existen
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p neobus-app/frontend neobus-app/backend'
 
-        # Transferir archivos del frontend
         scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/dist/* $USER@$HOST:neobus-app/frontend/
         
-        # Transferir backend: dist, package.json, package-lock.json y node_modules
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/node_modules $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
 
-        # Arrancar backend con PM2 (reiniciando si ya está corriendo)
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
+          cd neobus-app/backend
+          # Levantar la base de datos con docker-compose (en background)
+          docker-compose up -d db
+
+          # Reiniciar backend con PM2
           pm2 delete neobus-backend || true
-          pm2 start neobus-app/backend/dist/main.js --name neobus-backend
+          pm2 start dist/main.js --name neobus-backend
           pm2 save
         "
-            
-        # Limpiar archivo de clave
+
         rm -f private_key.pem
