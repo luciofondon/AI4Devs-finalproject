@@ -29,10 +29,6 @@ jobs:
       working-directory: ./backend
       run: npm run build
 
-    - name: Prune dev dependencies in backend
-      working-directory: ./backend
-      run: npm prune --production
-
     # Frontend setup and build
     - name: Install frontend dependencies
       working-directory: ./frontend
@@ -57,23 +53,29 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        
+
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p neobus-app/frontend neobus-app/backend'
 
+        # Subir frontend compilado
         scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/dist/* $USER@$HOST:neobus-app/frontend/
-        
+
+        # Subir artefactos del backend (sin node_modules)
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/node_modules $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
 
+        # Ejecutar setup en EC2
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
           cd neobus-app/backend
-          # Levantar la base de datos con docker-compose (en background)
+
+          echo '📦 Instalando dependencias backend en EC2...'
+          npm install --omit=dev
+
+          echo '🐘 Levantando base de datos con docker-compose...'
           docker-compose up -d db
 
-          # Reiniciar backend con PM2
+          echo '🚀 Arrancando backend con PM2...'
           pm2 delete neobus-backend || true
           pm2 start dist/main.js --name neobus-backend
           pm2 save
