@@ -56,8 +56,9 @@ jobs:
         chmod 600 private_key.pem
         
         # Crear directorios de despliegue si no existen
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/frontend /var/www/neobus-app/backend'
-        
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/frontend'
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/backend'
+
         # Transferir archivos del frontend
         scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/build/* $USER@$HOST:/var/www/neobus-app/frontend/
         
