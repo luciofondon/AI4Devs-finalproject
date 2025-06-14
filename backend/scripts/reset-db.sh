@@ -38,7 +38,7 @@ CONTAINER_NAME=$(docker ps --filter "name=postgres" --format "{{.Names}}")
 # Función para eliminar la base de datos
 drop_database() {
     echo "Eliminando base de datos $DB_NAME..."
-    if docker exec $CONTAINER_NAME psql -U $DB_USER -c "DROP DATABASE IF EXISTS $DB_NAME;" postgres; then
+    if docker exec $CONTAINER_NAME psql -U $DB_USER -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;"; then
         success_message "Base de datos eliminada correctamente"
     else
         handle_error "Error al eliminar la base de datos"
@@ -48,7 +48,7 @@ drop_database() {
 # Función para crear la base de datos
 create_database() {
     echo "Creando base de datos $DB_NAME..."
-    if docker exec $CONTAINER_NAME psql -U $DB_USER -c "CREATE DATABASE $DB_NAME;" postgres; then
+    if docker exec $CONTAINER_NAME psql -U $DB_USER -d postgres -c "CREATE DATABASE $DB_NAME;"; then
         success_message "Base de datos creada correctamente"
     else
         handle_error "Error al crear la base de datos"
