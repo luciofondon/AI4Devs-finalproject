@@ -31,14 +31,14 @@ fi
 # Valores por defecto para desarrollo local
 export DB_HOST=${DB_HOST:-localhost}
 export DB_PORT=${DB_PORT:-5432}
-export DB_USERNAME=${DB_USERNAME:-postgres}
+export DB_USER=${DB_USER:-postgres}
 export DB_PASSWORD=${DB_PASSWORD:-postgres}
-export DB_DATABASE=${DB_DATABASE:-neobus}
+export DB_NAME=${DB_NAME:-neobus}
 
 # Mostrar configuración (sin mostrar contraseñas)
 echo "Configuración actual:"
 echo "Entorno: ${ENV:-development}"
 echo "Host: $DB_HOST"
 echo "Puerto: $DB_PORT"
-echo "Base de datos: $DB_DATABASE"
-echo "Usuario: $DB_USERNAME" 
+echo "Base de datos: $DB_NAME"
+echo "Usuario: $DB_USER" 
