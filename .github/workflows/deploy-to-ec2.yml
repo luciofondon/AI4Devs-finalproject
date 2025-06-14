@@ -59,6 +59,7 @@ jobs:
           mkdir -p neobus-app/frontend \
                   neobus-app/backend \
                   neobus-app/backend/src/database/migrations \
+                  neobus-app/backend/src/config \
                   neobus-app/backend/scripts
         '
 
@@ -75,6 +76,7 @@ jobs:
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/tsconfig.build.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/scripts/* $USER@$HOST:neobus-app/backend/scripts/
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/src/database/migrations/* $USER@$HOST:neobus-app/backend/src/database/migrations/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/src/config/* $USER@$HOST:neobus-app/backend/src/config/
 
         # Ejecutar setup en EC2
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
