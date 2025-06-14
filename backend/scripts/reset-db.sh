@@ -25,7 +25,7 @@ warning_message() {
 # Cargar configuración
 source "$(dirname "$0")/config.sh"
 
-echo "Iniciando proceso de reset de la base de datos..."
+echo "Iniciando proceso de migraciones..."
 
 # Verificar y manejar el contenedor de PostgreSQL
 check_postgres_container() {
@@ -54,23 +54,6 @@ check_postgres_container() {
     success_message "Contenedor de PostgreSQL está corriendo"
 }
 
-# Función para verificar si la base de datos existe
-check_database_exists() {
-    docker exec postgres psql -U "$DB_USER" -d postgres -t -c "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" | grep -q 1
-    return $?
-}
-
-# Función para crear la base de datos si no existe
-ensure_database_exists() {
-    if ! check_database_exists; then
-        warning_message "Creando base de datos $DB_NAME..."
-        docker exec postgres psql -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;" || handle_error "Error al crear la base de datos"
-        success_message "Base de datos creada correctamente"
-    else
-        success_message "La base de datos $DB_NAME ya existe"
-    fi
-}
-
 # Función para ejecutar migraciones
 run_migrations() {
     warning_message "Ejecutando migraciones..."
@@ -91,9 +74,7 @@ run_migrations() {
 
 # Función principal
 main() {
-    echo "Iniciando proceso de base de datos..."
     check_postgres_container
-    ensure_database_exists
     run_migrations
     success_message "Proceso completado exitosamente"
 }
