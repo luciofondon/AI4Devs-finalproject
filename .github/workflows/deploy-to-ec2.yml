@@ -79,7 +79,7 @@ jobs:
           cd neobus-app/backend
 
           echo '📦 Instalando dependencias backend en EC2...'
-          npm install --omit=dev
+          npm install --include=dev
 
           echo '🐘 Levantando base de datos con docker-compose...'
           docker compose up -d
@@ -92,6 +92,9 @@ jobs:
           pm2 delete neobus-backend || true
           pm2 start dist/main.js --name neobus-backend
           pm2 save
+
+          echo '🧹 Limpiando dependencias de desarrollo...'
+          npm install --omit=dev
         "
 
         rm -f private_key.pem
