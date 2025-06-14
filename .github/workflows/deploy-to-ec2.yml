@@ -71,6 +71,8 @@ jobs:
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/.env.production $USER@$HOST:neobus-app/backend/.env
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/tsconfig.json $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/tsconfig.build.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/scripts/* $USER@$HOST:neobus-app/backend/scripts/
         scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/src/database/migrations/* $USER@$HOST:neobus-app/backend/src/database/migrations/
 
