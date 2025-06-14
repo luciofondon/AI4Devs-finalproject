@@ -27,13 +27,32 @@ source "$(dirname "$0")/config.sh"
 
 echo "Iniciando proceso de reset de la base de datos..."
 
-# Verificar si el contenedor de PostgreSQL está corriendo
-if ! docker ps | grep -q postgres; then
-    handle_error "El contenedor de PostgreSQL no está corriendo"
-fi
-
-# Obtener el nombre del contenedor
-CONTAINER_NAME=$(docker ps --filter "name=postgres" --format "{{.Names}}")
+# Verificar y manejar el contenedor de PostgreSQL
+check_postgres_container() {
+    if ! docker ps | grep -q postgres; then
+        warning_message "El contenedor de PostgreSQL no está corriendo"
+        
+        # Verificar si el contenedor existe pero está detenido
+        if docker ps -a | grep -q postgres; then
+            warning_message "Iniciando contenedor existente de PostgreSQL..."
+            docker start postgres || handle_error "Error al iniciar el contenedor de PostgreSQL"
+        else
+            warning_message "Creando nuevo contenedor de PostgreSQL..."
+            docker run --name postgres \
+                -e POSTGRES_USER="$DB_USER" \
+                -e POSTGRES_PASSWORD="$DB_PASSWORD" \
+                -e POSTGRES_DB="$DB_NAME" \
+                -p "$DB_PORT:5432" \
+                -d postgres:latest || handle_error "Error al crear el contenedor de PostgreSQL"
+        fi
+        
+        # Esperar a que PostgreSQL esté listo
+        warning_message "Esperando a que PostgreSQL esté listo..."
+        sleep 5
+    fi
+    
+    success_message "Contenedor de PostgreSQL está corriendo"
+}
 
 # Función para eliminar la base de datos
 drop_database() {
@@ -73,6 +92,7 @@ run_migrations() {
 # Función principal
 main() {
     echo "Iniciando reset de la base de datos..."
+    check_postgres_container
     drop_database
     create_database
     run_migrations
