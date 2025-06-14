@@ -58,16 +58,13 @@ check_postgres_container() {
 run_migrations() {
     warning_message "Ejecutando migraciones..."
     
-    if [ "$ENV" = "production" ]; then
-        # En producción, usar los archivos compilados con la configuración específica
-        echo "Ejecutando migraciones en producción..."
-        npm run typeorm migration:run -- -d dist/config/typeorm-cli.config.js || handle_error "Error al ejecutar migraciones"
-    else
-        # En desarrollo, compilar y ejecutar
-        echo "Ejecutando migraciones en desarrollo..."
-        npm run build || handle_error "Error al compilar el proyecto"
-        npm run typeorm migration:run || handle_error "Error al ejecutar migraciones"
-    fi
+    # Primero compilar el proyecto
+    echo "Compilando el proyecto..."
+    npm run build || handle_error "Error al compilar el proyecto"
+    
+    # Luego ejecutar las migraciones
+    echo "Ejecutando migraciones..."
+    npm run typeorm migration:run -- -d dist/config/typeorm-cli.config.js || handle_error "Error al ejecutar migraciones"
     
     success_message "Migraciones ejecutadas correctamente"
 }
