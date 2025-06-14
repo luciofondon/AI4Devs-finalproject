@@ -55,10 +55,10 @@ export class InitialData1700000000001 implements MigrationInterface {
 
     try {
       // Eliminar datos en orden inverso
-      await queryRunner.query(`DELETE FROM cameras WHERE id IN ('CAM12345', 'CAM67890', 'CAM24680', 'CAM13579');`);
-      await queryRunner.query(`DELETE FROM validators WHERE id IN ('VAL12345', 'VAL67890', 'VAL24680', 'VAL13579');`);
-      await queryRunner.query(`DELETE FROM pupitres WHERE id IN ('PUP12345', 'PUP67890', 'PUP24680');`);
-      await queryRunner.query(`DELETE FROM buses WHERE id IN ('1234', '5678', '9012');`);
+      await queryRunner.query(`DELETE FROM cameras;`);
+      await queryRunner.query(`DELETE FROM validators;`);
+      await queryRunner.query(`DELETE FROM pupitres;`);
+      await queryRunner.query(`DELETE FROM buses;`);
 
       await queryRunner.commitTransaction();
     } catch (error) {
