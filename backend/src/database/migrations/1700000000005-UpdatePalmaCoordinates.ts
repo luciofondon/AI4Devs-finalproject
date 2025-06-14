@@ -5,21 +5,25 @@ export class UpdatePalmaCoordinates1700000000005 implements MigrationInterface {
     await queryRunner.startTransaction();
 
     try {
-      // Actualizar coordenadas de los autobuses con ubicaciones de Palma de Mallorca
+      // Actualizar coordenadas de los buses en Palma
       await queryRunner.query(`
         UPDATE buses 
         SET 
-          latitude = CASE id
-            WHEN '1234' THEN 39.5696  -- Plaza España
-            WHEN '5678' THEN 39.5712  -- Catedral
-            WHEN '9012' THEN 39.5743  -- Puerto
-          END,
-          longitude = CASE id
-            WHEN '1234' THEN 2.6502   -- Plaza España
-            WHEN '5678' THEN 2.6484   -- Catedral
-            WHEN '9012' THEN 2.6392   -- Puerto
-          END
-        WHERE id IN ('1234', '5678', '9012');
+          latitude = 39.5696,
+          longitude = 2.6502
+        WHERE id = '2001';  -- Plaza España
+
+        UPDATE buses 
+        SET 
+          latitude = 39.5679,
+          longitude = 2.6483
+        WHERE id = '2002';  -- Catedral
+
+        UPDATE buses 
+        SET 
+          latitude = 39.5589,
+          longitude = 2.6214
+        WHERE id = '2003';  -- Puerto
       `);
 
       await queryRunner.commitTransaction();
@@ -33,13 +37,13 @@ export class UpdatePalmaCoordinates1700000000005 implements MigrationInterface {
     await queryRunner.startTransaction();
 
     try {
-      // Restaurar las coordenadas originales
+      // Restaurar coordenadas originales
       await queryRunner.query(`
         UPDATE buses 
         SET 
-          latitude = 40.4168,
-          longitude = -3.7038
-        WHERE id IN ('1234', '5678', '9012');
+          latitude = 39.5696,
+          longitude = 2.6502
+        WHERE id IN ('2001', '2002', '2003');
       `);
 
       await queryRunner.commitTransaction();
