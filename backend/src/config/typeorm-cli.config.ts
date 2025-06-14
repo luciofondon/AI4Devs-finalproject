@@ -7,6 +7,8 @@ import { Camera } from '../entities/camera.entity';
 
 config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export default new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
@@ -15,6 +17,8 @@ export default new DataSource({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_DATABASE || 'devices_monitoring',
   entities: [Bus, Pupitre, Validator, Camera],
-  migrations: ['src/database/migrations/*.ts'],
+  migrations: isProduction 
+    ? ['dist/database/migrations/*.js']
+    : ['src/database/migrations/*.ts'],
   synchronize: false,
 }); 

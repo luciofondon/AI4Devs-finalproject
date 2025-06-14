@@ -21,17 +21,54 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# NeoBus Backend
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Descripción
 
-## Project setup
+Backend para el sistema de monitoreo de buses NeoBus, desarrollado con NestJS y TypeORM.
+
+## Configuración del Proyecto
 
 ```bash
+# Instalar dependencias
 $ npm install
 ```
 
-## Database setup
+## Configuración de la Base de Datos
+
+### Variables de Entorno
+
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Configuración de la Base de Datos
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=neobus
+
+# Configuración de la Aplicación
+NODE_ENV=development
+PORT=3000
+
+# Configuración de TypeORM
+TYPEORM_SYNCHRONIZE=false
+TYPEORM_LOGGING=true
+
+# Configuración de Seguridad
+JWT_SECRET=your-secret-key
+JWT_EXPIRATION=3600
+
+# Configuración de CORS
+CORS_ORIGIN=http://localhost:3000,http://localhost:4200
+
+# Configuración de WebSocket
+WS_PORT=3001
+
+# Configuración de Logs
+LOG_LEVEL=debug
+```
 
 ### Configuración con Docker
 
@@ -49,87 +86,196 @@ $ docker-compose logs -f
 $ docker-compose down
 ```
 
-### Ejecutar migraciones
+## Gestión de la Base de Datos
+
+### Comandos Disponibles
 
 ```bash
-# Ejecutar las migraciones
-$ npm run typeorm migration:run
+# Inicializar la base de datos (desarrollo)
+$ npm run db:init
 
-# Para revertir las migraciones si es necesario
-$ npm run typeorm migration:revert
+# Inicializar la base de datos (producción)
+$ npm run db:init:prod
+
+# Reiniciar la base de datos (desarrollo)
+$ npm run db:reset
+
+# Reiniciar la base de datos (producción)
+$ npm run db:reset:prod
+
+# Ver estado de la base de datos
+$ npm run db:status
 ```
 
-## Environment Variables
+### Migraciones
 
-Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
-
-```env
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=your_password
-DB_DATABASE=bus_monitoring
-
-# JWT
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRATION=1d
-
-# CORS
-CORS_ORIGIN=http://localhost:3000
-```
-
-## Compile and run the project
+El proyecto utiliza TypeORM para la gestión de migraciones. Los siguientes comandos están disponibles:
 
 ```bash
-# development
+# Generar una nueva migración
+$ npm run migration:generate -- src/migrations/NombreMigracion
+
+# Ejecutar migraciones pendientes
+$ npm run migration:run
+
+# Revertir la última migración
+$ npm run migration:revert
+
+# Sincronizar esquema (solo desarrollo)
+$ npm run schema:sync
+
+# Eliminar esquema (¡cuidado!)
+$ npm run schema:drop
+```
+
+#### Cuándo usar cada comando:
+
+1. **`migration:generate`**:
+   - Cuando modificas entidades (añades/modificas/eliminas campos)
+   - Genera el SQL necesario para los cambios
+
+2. **`migration:run`**:
+   - Al desplegar la aplicación
+   - Cuando hay cambios pendientes en la base de datos
+
+3. **`migration:revert`**:
+   - Si necesitas deshacer la última migración
+   - En caso de problemas con una migración
+
+4. **`schema:sync`**:
+   - Solo en desarrollo
+   - Para actualizar rápidamente la estructura
+
+5. **`schema:drop`**:
+   - Solo en desarrollo
+   - Para empezar desde cero
+
+### Flujo de Trabajo Recomendado
+
+1. **Durante el desarrollo**:
+```bash
+# 1. Hacer cambios en las entidades
+# 2. Generar la migración
+$ npm run migration:generate -- src/migrations/AddNewField
+
+# 3. Revisar el archivo de migración generado
+# 4. Ejecutar la migración
+$ npm run migration:run
+```
+
+2. **En producción**:
+```bash
+# Solo ejecutar migraciones existentes
+$ npm run migration:run
+```
+
+## Compilación y Ejecución
+
+```bash
+# desarrollo
 $ npm run start
 
-# watch mode
+# modo watch
 $ npm run start:dev
 
-# production mode
+# producción
 $ npm run start:prod
 ```
 
-## Run tests
+## Tests
 
 ```bash
-# unit tests
+# tests unitarios
 $ npm run test
 
-# e2e tests
+# tests e2e
 $ npm run test:e2e
 
-# test coverage
+# cobertura de tests
 $ npm run test:cov
 ```
 
-## Deployment
+## Despliegue
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### AWS
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Para desplegar en AWS, asegúrate de:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+1. Configurar las variables de entorno en el panel de control de EC2
+2. Usar AWS Secrets Manager para las credenciales
+3. Configurar los grupos de seguridad adecuadamente
+4. Usar el comando `npm run db:init:prod` para inicializar la base de datos
+
+### Variables de Entorno en Producción
+
+Crea un archivo `.env.production` con:
+
+```env
+# Configuración de la Base de Datos (AWS RDS)
+DB_HOST=${RDS_HOSTNAME}
+DB_PORT=${RDS_PORT}
+DB_USERNAME=${RDS_USERNAME}
+DB_PASSWORD=${RDS_PASSWORD}
+DB_DATABASE=${RDS_DB_NAME}
+
+# Configuración de la Aplicación
+NODE_ENV=production
+PORT=3000
+
+# Configuración de TypeORM
+TYPEORM_SYNCHRONIZE=false
+TYPEORM_LOGGING=false
+
+# Configuración de Seguridad
+JWT_SECRET=your-production-secret-key
+JWT_EXPIRATION=3600
+
+# Configuración de CORS
+CORS_ORIGIN=https://tu-dominio.com
+
+# Configuración de WebSocket
+WS_PORT=3001
+
+# Configuración de Logs
+LOG_LEVEL=info
+
+# Configuración de AWS
+AWS_REGION=eu-west-1
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Buenas Prácticas
 
-## Resources
+1. **Seguridad**:
+   - Nunca subas archivos `.env` a git
+   - Usa contraseñas fuertes
+   - Rota las claves regularmente
+   - Usa IAM roles cuando sea posible
 
-Check out a few resources that may come in handy when working with NestJS:
+2. **Migraciones**:
+   - Nombra las migraciones descriptivamente
+   - Revisa las migraciones generadas
+   - Mantén un historial de migraciones
+   - Haz backups antes de ejecutar migraciones en producción
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+3. **Desarrollo**:
+   - Usa `db:init` para la primera configuración
+   - Usa `db:reset` cuando necesites empezar de nuevo
+   - Usa `db:status` para verificar el estado
+
+4. **Producción**:
+   - Usa `db:init:prod` para el despliegue inicial
+   - Usa `db:reset:prod` con precaución
+   - Asegúrate de tener backups antes de usar reset
+
+## Soporte
+
+Para soporte y preguntas, por favor contacta al equipo de desarrollo.
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT.
 
 ## Support
 

@@ -20,10 +20,15 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
     "migration:generate": "npm run typeorm -- migration:generate -d src/database/data-source.ts",
-    "migration:run": "npm run typeorm -- migration:run -d src/database/data-source.ts",
+    "migration:run": "npm run typeorm migration:run -- -d src/config/typeorm-cli.config.ts",
     "migration:revert": "npm run typeorm -- migration:revert -d src/database/data-source.ts",
     "schema:sync": "npm run typeorm -- schema:sync -d src/database/data-source.ts",
-    "schema:drop": "npm run typeorm -- schema:drop -d src/database/data-source.ts"
+    "schema:drop": "npm run typeorm -- schema:drop -d src/database/data-source.ts",
+    "db:init": "chmod +x ./scripts/init-database.sh && ./scripts/init-database.sh",
+    "db:init:prod": "ENV=production chmod +x ./scripts/init-database.sh && ./scripts/init-database.sh",
+    "db:reset": "chmod +x ./scripts/reset-db.sh && ./scripts/reset-db.sh",
+    "db:reset:prod": "ENV=production chmod +x ./scripts/reset-db.sh && ./scripts/reset-db.sh",
+    "db:status": "chmod +x ./scripts/db-status.sh && ./scripts/db-status.sh"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

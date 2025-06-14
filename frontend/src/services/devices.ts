@@ -1,7 +1,7 @@
 import type { Bus, Pupitre, Validator, Camera } from '../types';
 import { BusStatus, PupitreStatus, ValidatorStatus, CameraStatus } from '../types';
 
-const API_URL = 'http://localhost:3000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 export const devicesService = {
   // Buses
