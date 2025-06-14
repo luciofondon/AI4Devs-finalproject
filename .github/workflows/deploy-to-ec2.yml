@@ -54,7 +54,13 @@ jobs:
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
 
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p neobus-app/frontend neobus-app/backend'
+        # Crear estructura de directorios en EC2
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST '
+          mkdir -p neobus-app/frontend \
+                  neobus-app/backend \
+                  neobus-app/backend/src/database/migrations \
+                  neobus-app/backend/scripts
+        '
 
         # Subir frontend compilado
         scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/dist/* $USER@$HOST:neobus-app/frontend/
@@ -65,8 +71,8 @@ jobs:
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/.env.production $USER@$HOST:neobus-app/backend/.env
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/scripts $USER@$HOST:neobus-app/backend/
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/src/database/migrations $USER@$HOST:neobus-app/backend/src/database/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/scripts/* $USER@$HOST:neobus-app/backend/scripts/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/src/database/migrations/* $USER@$HOST:neobus-app/backend/src/database/migrations/
 
         # Ejecutar setup en EC2
         ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
