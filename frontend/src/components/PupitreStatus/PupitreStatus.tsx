@@ -190,6 +190,7 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
         backgroundColor: getStatusBackgroundColor(pupitre.status),
       }}
       onClick={handleClick}
+      data-testid="pupitre-card"
     >
       <LoadingOverlay open={isUpdating} />
       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
@@ -205,6 +206,7 @@ export const PupitreStatus = ({ pupitre }: PupitreStatusProps) => {
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
               px: 1
             }}
+            data-testid="status-badge"
           />
         </Box>
 

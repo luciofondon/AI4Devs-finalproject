@@ -1,16 +1,41 @@
 [
   {
-    "id": "1",
-    "busId": "1",
+    "id": "PUP001",
     "status": "OK",
-    "createdAt": "2024-03-31T10:00:00Z",
-    "updatedAt": "2024-03-31T10:00:00Z"
+    "busId": "5678",
+    "printerStatus": "OK",
+    "modemStatus": "OK",
+    "qrStatus": "OK",
+    "rfidStatus": "OK",
+    "emvStatus": "OK",
+    "gpsStatus": "OK",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
   },
   {
-    "id": "2",
-    "busId": "1",
+    "id": "PUP002",
     "status": "WARNING",
-    "createdAt": "2024-03-31T10:00:00Z",
-    "updatedAt": "2024-03-31T10:00:00Z"
+    "busId": "9012",
+    "printerStatus": "WARNING",
+    "modemStatus": "OK",
+    "qrStatus": "OK",
+    "rfidStatus": "WARNING",
+    "emvStatus": "OK",
+    "gpsStatus": "OK",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "PUP003",
+    "status": "KO",
+    "busId": "1234",
+    "printerStatus": "KO",
+    "modemStatus": "KO",
+    "qrStatus": "KO",
+    "rfidStatus": "KO",
+    "emvStatus": "KO",
+    "gpsStatus": "KO",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
   }
 ] 
