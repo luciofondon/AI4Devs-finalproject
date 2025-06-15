@@ -1,6 +1,5 @@
 
 # Prompt 
-
 Revisa el fichero @readme.md  y que este todo correcto 
 
 
@@ -13,7 +12,7 @@ Todo lo relacionado con el backend lo haremos en una carpeta backend
 
 
 # Prompt 
-Me gustaría empezar con el paso de Configurar la bases de datos donde quiero dockerizar una BD PostgreSQL
+Me gustaría empezar con el paso de configurar la bases de datos donde quiero dockerizar una BD PostgreSQL
 
 
 # Prompt 
@@ -25,7 +24,7 @@ Ya he configurado todas las variables de entorno, por donde podría seguir
 
 
 # Prompt 
-Antes de seguir con el websocket, me gustaría probar que todo funciona correcgtamente
+Antes de seguir con el websocket, me gustaría probar que todo funciona correctamente
 
 
 # Prompt 
@@ -42,14 +41,13 @@ Me puede decir un ejemplo para probar la api
 
 # Prompt 
 
-Primero quiero verificar que funcione la api y luego nos centraremos en websocket,. 
+Primero quiero verificar que funcione la api y luego nos centraremos en websocket. 
 
 # Prompt 
 
 Que version de NodeJs es la necesaria
 
 # Prompt 
-Ahora vamos a proceder a la configuracion del websocket
 
 Me podrías eliminar la configuracion de websocket del proyecto para centrarme solo en la API  rest
 
@@ -117,6 +115,12 @@ Your configFile is invalid: /home/plxadmin/Escritorio/MASTER/AI4Devs-finalprojec
 
 It threw an error when required, check the stack trace below:
 
+# Prompt 
+- Los autobuses, las validadoras y los pupitres no deben almacenar su estado en la BD. Se debe autocalcular en función de los componentes que tienen.
+- Las validadoras debe devolver OK si tiene el rfid y emv OK. Si tiene un componente como KO, debe devolver warning. si tiene los dos componentes KO debe devolver KO.
+- El estado de autobus debe devolver OK si todas las validadoras, pupitres y cámaras están en OK, en caso contrario debe devolver warning o KO. 
+. El pupitre debe devolver OK si todos los componentes están OK.. 
+
 # Prompt infrastructura
 
 "Escribe un script YAML para GitHub Actions que haga lo siguiente:
@@ -155,3 +159,12 @@ Genera un script que haga lo siguiente:
 
 
 Quiero que generes una pipeline usando Github Actions para desplegar en un servidor EC2.  Para ellos debes  crear un archivo yml con toda la configuracion necesaria. 
+
+
+# Prompt 
+
+Agrega filtro de estado OK, warning y KO en las vistas de autobuses, pupitres, validadoras y cámaras.
+Ten en cuenta que las cámaras solo pueden estar en OK / KO. 
+
+# Prompt
+El filtrado debe procesarse en el backend, por lo tanto, lo tiene que tener la api. 

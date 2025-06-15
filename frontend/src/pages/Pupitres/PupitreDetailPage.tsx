@@ -96,9 +96,9 @@ export const PupitreDetailPage = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Paper sx={{ p: 3 }}>
+      <Paper sx={{ p: 3 }} data-testid="pupitre-detail">
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h4" component="h1">
+          <Typography variant="h4" component="h1" data-testid="pupitre-id">
             Pupitre {pupitre.id}
           </Typography>
           <Button variant="outlined" onClick={() => navigate('/pupitres')}>
@@ -114,6 +114,7 @@ export const PupitreDetailPage = () => {
             label={pupitre.status}
             color={pupitre.status === 'OK' ? 'success' : pupitre.status === 'WARNING' ? 'warning' : 'error'}
             sx={{ mb: 2 }}
+            data-testid="pupitre-status"
           />
         </Box>
 
@@ -177,7 +178,7 @@ export const PupitreDetailPage = () => {
           </Typography>
           {bus ? (
             <Box>
-              <Typography variant="body1">
+              <Typography variant="body1" data-testid="pupitre-bus-id">
                 Bus ID: {bus.id}
               </Typography>
               <Typography variant="body1">

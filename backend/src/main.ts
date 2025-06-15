@@ -8,9 +8,20 @@ async function bootstrap() {
   
   // Habilitar CORS
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Puertos de Vite por defecto
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    origin: [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://13.61.15.14',
+      'http://13.61.15.14:5173',
+      'http://13.61.15.14:3000',
+      'http://13.61.15.14:80',
+      'http://13.61.15.14:443',
+      'https://13.61.15.14',
+      'https://13.61.15.14:443'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
   
   // Configurar validación global

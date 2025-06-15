@@ -41,6 +41,7 @@ export const PupitresPage = () => {
           exclusive
           onChange={(_, newValue) => newValue && setStatusFilter(newValue)}
           aria-label="filtro de estado"
+          data-testid="status-filter"
         >
           <ToggleButton value="ALL" aria-label="todos">
             Todos
@@ -58,7 +59,7 @@ export const PupitresPage = () => {
       </Box>
 
       {pupitres && pupitres.length > 0 ? (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} data-testid="pupitres-list">
           {pupitres.map((pupitre) => (
             <Grid item xs={12} sm={6} md={3} key={pupitre.id}>
               <PupitreStatus pupitre={pupitre} />

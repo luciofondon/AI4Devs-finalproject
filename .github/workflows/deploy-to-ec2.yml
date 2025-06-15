@@ -51,27 +51,58 @@ jobs:
         HOST: ${{ secrets.EC2_INSTANCE }}
         USER: ${{ secrets.EC2_USER }}
       run: |
-        # Crear archivo de clave privada
         echo "$PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        
-        # Crear directorios de despliegue si no existen
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'mkdir -p /var/www/neobus-app/frontend /var/www/neobus-app/backend'
-        
-        # Transferir archivos del frontend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/build/* $USER@$HOST:/var/www/neobus-app/frontend/
-        
-        # Transferir archivos del backend
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:/var/www/neobus-app/backend/
-        
-        # Transferir package.json y package-lock.json del backend
-        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package*.json $USER@$HOST:/var/www/neobus-app/backend/
-        
-        # Instalar dependencias del backend en el servidor
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'cd /var/www/neobus-app/backend && npm install --production'
-        
-        # Reiniciar el servicio de backend
-        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST 'sudo systemctl restart neobus-backend'
-        
-        # Limpiar archivo de clave
+
+        # Crear estructura de directorios en EC2
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST '
+          mkdir -p neobus-app/frontend \
+                  neobus-app/backend \
+                  neobus-app/backend/dist/database/migrations \
+                  neobus-app/backend/dist/entities \
+                  neobus-app/backend/scripts
+        '
+
+        # Subir frontend compilado
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/dist/* $USER@$HOST:neobus-app/frontend/
+
+        # Subir artefactos del backend (sin node_modules)
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:neobus-app/backend/dist/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package.json $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem backend/.env.production $USER@$HOST:neobus-app/backend/.env
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/scripts/* $USER@$HOST:neobus-app/backend/scripts/
+
+        # Ejecutar setup en EC2
+        ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST "
+          cd neobus-app/backend
+
+          echo '📦 Instalando dependencias backend en EC2...'
+          npm install --include=dev
+
+          echo '🐘 Levantando base de datos con docker-compose...'
+          docker compose up -d
+
+          echo '🔄 Ejecutando migraciones de la base de datos...'
+          # Esperar a que PostgreSQL esté listo
+          sleep 10
+          
+          # Ejecutar migraciones en orden
+          echo 'Ejecutando migración inicial...'
+          ENV=production npm run typeorm migration:run -- -d dist/config/typeorm-cli.config.js
+          
+          # Verificar que las migraciones se ejecutaron correctamente
+          echo 'Verificando estado de las migraciones...'
+          ENV=production npm run typeorm migration:show -- -d dist/config/typeorm-cli.config.js
+
+          echo '🚀 Arrancando backend con PM2...'
+          pm2 delete neobus-backend || true
+          pm2 start dist/main.js --name neobus-backend
+          pm2 save
+
+          echo '🧹 Limpiando dependencias de desarrollo...'
+          npm install --omit=dev
+        "
+
         rm -f private_key.pem
