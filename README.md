@@ -1,5 +1,7 @@
 # AI4Devs Final Project
 
+Proyecto para monitorizar los diferentes dispositivos físicos instalandos en los autobuses. 
+
 Este proyecto contiene un frontend (React + Vite), un backend (NestJS) y una base de datos PostgreSQL, todo orquestado con Docker.
 
 ## URLs de acceso
