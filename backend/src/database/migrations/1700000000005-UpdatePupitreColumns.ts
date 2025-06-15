@@ -5,14 +5,30 @@ export class UpdatePupitreColumns1700000000005 implements MigrationInterface {
     await queryRunner.startTransaction();
 
     try {
-      // Agregar las columnas faltantes
-      await queryRunner.query(`
-        ALTER TABLE pupitres 
-        ADD COLUMN IF NOT EXISTS qr_status validator_status DEFAULT 'OK',
-        ADD COLUMN IF NOT EXISTS rfid_status validator_status DEFAULT 'OK',
-        ADD COLUMN IF NOT EXISTS emv_status validator_status DEFAULT 'OK',
-        ADD COLUMN IF NOT EXISTS gps_status validator_status DEFAULT 'OK';
-      `);
+      // Verificar si las columnas existen antes de crearlas
+      const table = await queryRunner.getTable('pupitres');
+      const columns = table?.columns.map(col => col.name) || [];
+
+      const columnsToAdd: string[] = [];
+      if (!columns.includes('qr_status')) {
+        columnsToAdd.push('ADD COLUMN qr_status validator_status DEFAULT \'OK\'');
+      }
+      if (!columns.includes('rfid_status')) {
+        columnsToAdd.push('ADD COLUMN rfid_status validator_status DEFAULT \'OK\'');
+      }
+      if (!columns.includes('emv_status')) {
+        columnsToAdd.push('ADD COLUMN emv_status validator_status DEFAULT \'OK\'');
+      }
+      if (!columns.includes('gps_status')) {
+        columnsToAdd.push('ADD COLUMN gps_status validator_status DEFAULT \'OK\'');
+      }
+
+      if (columnsToAdd.length > 0) {
+        await queryRunner.query(`
+          ALTER TABLE pupitres 
+          ${columnsToAdd.join(',\n')};
+        `);
+      }
 
       await queryRunner.commitTransaction();
     } catch (error) {
