@@ -16,7 +16,9 @@ export default new DataSource({
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_DATABASE || 'devices_monitoring',
-  entities: [Bus, Pupitre, Validator, Camera],
+  entities: isProduction 
+    ? ['dist/entities/*.entity.js']
+    : ['src/entities/*.entity.ts'],
   migrations: isProduction 
     ? ['dist/database/migrations/*.js']
     : ['src/database/migrations/*.ts'],
