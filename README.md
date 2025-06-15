@@ -2,6 +2,11 @@
 
 Este proyecto contiene un frontend (React + Vite), un backend (NestJS) y una base de datos PostgreSQL, todo orquestado con Docker.
 
+## URLs de acceso
+- **Producción**: [http://13.61.15.14](http://13.61.15.14)
+- **Desarrollo local**: [http://localhost:5173](http://localhost:5173)
+
+
 ## Requisitos previos
 - [Docker](https://www.docker.com/get-started/) y [Docker Compose](https://docs.docker.com/compose/) instalados
 - Node.js >= 18 (solo si quieres desarrollo local fuera de Docker)
@@ -10,6 +15,7 @@ Este proyecto contiene un frontend (React + Vite), un backend (NestJS) y una bas
 - `/frontend`: Aplicación web (React)
 - `/backend`: API y lógica de negocio (NestJS)
 - `/README.md`: Este archivo
+
 
 ---
 
