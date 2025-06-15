@@ -59,6 +59,7 @@ jobs:
           mkdir -p neobus-app/frontend \
                   neobus-app/backend \
                   neobus-app/backend/dist/database/migrations \
+                  neobus-app/backend/dist/entities \
                   neobus-app/backend/scripts
         '
 
@@ -66,7 +67,7 @@ jobs:
         scp -o StrictHostKeyChecking=no -i private_key.pem -r frontend/dist/* $USER@$HOST:neobus-app/frontend/
 
         # Subir artefactos del backend (sin node_modules)
-        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist $USER@$HOST:neobus-app/backend/
+        scp -o StrictHostKeyChecking=no -i private_key.pem -r backend/dist/* $USER@$HOST:neobus-app/backend/dist/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/package-lock.json $USER@$HOST:neobus-app/backend/
         scp -o StrictHostKeyChecking=no -i private_key.pem backend/docker-compose.yml $USER@$HOST:neobus-app/backend/
@@ -85,7 +86,7 @@ jobs:
 
           echo '🔄 Ejecutando migraciones de la base de datos...'
           chmod +x ./scripts/reset-db.sh
-          ENV=production ./scripts/reset-db.sh
+          ENV=production npm run typeorm migration:run -- -d dist/config/typeorm-cli.config.js
 
           echo '🚀 Arrancando backend con PM2...'
           pm2 delete neobus-backend || true
