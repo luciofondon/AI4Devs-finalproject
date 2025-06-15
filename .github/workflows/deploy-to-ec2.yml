@@ -85,8 +85,16 @@ jobs:
           docker compose up -d
 
           echo '🔄 Ejecutando migraciones de la base de datos...'
-          chmod +x ./scripts/reset-db.sh
+          # Esperar a que PostgreSQL esté listo
+          sleep 10
+          
+          # Ejecutar migraciones en orden
+          echo 'Ejecutando migración inicial...'
           ENV=production npm run typeorm migration:run -- -d dist/config/typeorm-cli.config.js
+          
+          # Verificar que las migraciones se ejecutaron correctamente
+          echo 'Verificando estado de las migraciones...'
+          ENV=production npm run typeorm migration:show -- -d dist/config/typeorm-cli.config.js
 
           echo '🚀 Arrancando backend con PM2...'
           pm2 delete neobus-backend || true
