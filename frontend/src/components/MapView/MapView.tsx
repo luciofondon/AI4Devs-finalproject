@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { useEffect, useRef, useState } from 'react';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Box } from '@mui/material';
@@ -19,29 +19,39 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+const getStatusColor = (status: Bus['status']) => {
+  switch (status) {
+    case 'OK':
+      return '#4caf50';
+    case 'WARNING':
+      return '#ff9800';
+    case 'KO':
+      return '#f44336';
+    default:
+      return '#757575';
+  }
+};
+
 interface MapViewProps {
   buses: Bus[];
 }
 
-export const MapView = ({ buses }: MapViewProps) => {
-  const mapRef = useRef<L.Map>(null);
+// Componente para actualizar el mapa cuando cambian los buses
+const MapUpdater = ({ buses }: { buses: Bus[] }) => {
+  const map = useMap();
+  const markersRef = useRef<L.Marker[]>([]);
 
   useEffect(() => {
-    if (!mapRef.current) return;
-
     // Limpiar marcadores existentes
-    mapRef.current.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        mapRef.current?.removeLayer(layer);
-      }
-    });
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
 
     // Si no hay buses, no hacer nada más
     if (buses.length === 0) return;
 
     // Ajustar el mapa a los límites de los buses
     const bounds = L.latLngBounds(buses.map(bus => [bus.latitude, bus.longitude]));
-    mapRef.current.fitBounds(bounds);
+    map.fitBounds(bounds);
 
     // Agregar nuevos marcadores
     buses.forEach((bus) => {
@@ -78,35 +88,30 @@ export const MapView = ({ buses }: MapViewProps) => {
       }).setContent(popupContent);
 
       marker.bindPopup(popup);
-      marker.addTo(mapRef.current!);
+      marker.addTo(map);
+      markersRef.current.push(marker);
     });
-  }, [buses]);
+  }, [buses, map]);
 
-  const getStatusColor = (status: Bus['status']) => {
-    switch (status) {
-      case 'OK':
-        return '#4caf50';
-      case 'WARNING':
-        return '#ff9800';
-      case 'KO':
-        return '#f44336';
-      default:
-        return '#757575';
-    }
-  };
+  return null;
+};
+
+export const MapView = ({ buses }: MapViewProps) => {
+  const [mapReady, setMapReady] = useState(false);
 
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
       <MapContainer
-        ref={mapRef}
         style={{ width: '100%', height: '100%' }}
         center={[39.5789, 2.6445]} // Coordenadas de Palma de Mallorca
         zoom={13}
+        whenReady={() => setMapReady(true)}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+        {mapReady && <MapUpdater buses={buses} />}
       </MapContainer>
     </Box>
   );

@@ -1,134 +1,114 @@
 import type { Bus, Pupitre, Validator, Camera } from '../types';
 import { BusStatus, PupitreStatus, ValidatorStatus, CameraStatus } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+import api from './api';
 
 export const devicesService = {
   // Buses
   getBuses: async (status?: BusStatus): Promise<Bus[]> => {
-    const url = status ? `${API_URL}/buses?status=${status}` : `${API_URL}/buses`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Error al cargar los buses');
+    try {
+      const response = await api.get(`/buses${status ? `?status=${status}` : ''}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al cargar los buses:', error);
+      throw new Error('Error al cargar los buses. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   getBusById: async (id: string): Promise<Bus> => {
-    const response = await fetch(`${API_URL}/buses/${id}`);
-    if (!response.ok) {
-      throw new Error('Error al cargar el bus');
+    try {
+      const response = await api.get(`/buses/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al cargar el bus ${id}:`, error);
+      throw new Error('Error al cargar el bus. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   updateBusStatus: async (id: string, status: BusStatus): Promise<Bus> => {
-    const response = await fetch(`${API_URL}/buses/${id}/status`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      throw new Error('Error al actualizar el estado del bus');
+    try {
+      const response = await api.put(`/buses/${id}/status`, { status });
+      return response.data;
+    } catch (error) {
+      console.error(`Error al actualizar el estado del bus ${id}:`, error);
+      throw new Error('Error al actualizar el estado del bus. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   // Pupitres
   getPupitres: async (status?: PupitreStatus): Promise<Pupitre[]> => {
-    const url = status ? `${API_URL}/pupitres?status=${status}` : `${API_URL}/pupitres`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Error al cargar los pupitres');
+    try {
+      const response = await api.get(`/pupitres${status ? `?status=${status}` : ''}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al cargar los pupitres:', error);
+      throw new Error('Error al cargar los pupitres. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   getPupitreById: async (id: string): Promise<Pupitre> => {
-    const response = await fetch(`${API_URL}/pupitres/${id}`);
-    if (!response.ok) {
-      throw new Error('Error al cargar el pupitre');
+    try {
+      const response = await api.get(`/pupitres/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al cargar el pupitre ${id}:`, error);
+      throw new Error('Error al cargar el pupitre. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   updatePupitreStatus: async (id: string, status: PupitreStatus): Promise<Pupitre> => {
-    const response = await fetch(`${API_URL}/pupitres/${id}/status`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      throw new Error('Error al actualizar el estado del pupitre');
-    }
-    return response.json();
+    const response = await api.put(`/pupitres/${id}/status`, { status });
+    return response.data;
   },
 
   // Validadores
   getValidators: async (status?: ValidatorStatus): Promise<Validator[]> => {
-    const url = status ? `${API_URL}/validators?status=${status}` : `${API_URL}/validators`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Error al cargar los validadores');
+    try {
+      const response = await api.get(`/validators${status ? `?status=${status}` : ''}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al cargar las validadoras:', error);
+      throw new Error('Error al cargar las validadoras. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   getValidatorById: async (id: string): Promise<Validator> => {
-    const response = await fetch(`${API_URL}/validators/${id}`);
-    if (!response.ok) {
-      throw new Error('Error al cargar el validador');
+    try {
+      const response = await api.get(`/validators/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al cargar la validadora ${id}:`, error);
+      throw new Error('Error al cargar la validadora. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   updateValidatorStatus: async (id: string, status: ValidatorStatus): Promise<Validator> => {
-    const response = await fetch(`${API_URL}/validators/${id}/status`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      throw new Error('Error al actualizar el estado del validador');
-    }
-    return response.json();
+    const response = await api.put(`/validators/${id}/status`, { status });
+    return response.data;
   },
 
   // Cámaras
   getCameras: async (status?: CameraStatus): Promise<Camera[]> => {
-    const url = status ? `${API_URL}/cameras?status=${status}` : `${API_URL}/cameras`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Error al cargar las cámaras');
+    try {
+      const response = await api.get(`/cameras${status ? `?status=${status}` : ''}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al cargar las cámaras:', error);
+      throw new Error('Error al cargar las cámaras. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   getCameraById: async (id: string): Promise<Camera> => {
-    const response = await fetch(`${API_URL}/cameras/${id}`);
-    if (!response.ok) {
-      throw new Error('Error al cargar la cámara');
+    try {
+      const response = await api.get(`/cameras/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al cargar la cámara ${id}:`, error);
+      throw new Error('Error al cargar la cámara. Por favor, intente nuevamente.');
     }
-    return response.json();
   },
 
   updateCameraStatus: async (id: string, status: CameraStatus): Promise<Camera> => {
-    const response = await fetch(`${API_URL}/cameras/${id}/status`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      throw new Error('Error al actualizar el estado de la cámara');
-    }
-    return response.json();
+    const response = await api.put(`/cameras/${id}/status`, { status });
+    return response.data;
   },
 }; 
